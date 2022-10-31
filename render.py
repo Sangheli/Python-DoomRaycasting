@@ -24,7 +24,7 @@ class Render:
         self.game.player_view.render()
 
     def draw_walls(self):
-        pass
+        self.game.object_renderer.draw()
 
     def draw_walls_textures(self):
         self.game.object_renderer.draw()

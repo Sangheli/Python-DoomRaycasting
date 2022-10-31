@@ -1,5 +1,6 @@
 import pygame as pg
 
+
 class RayView:
     def __init__(self, game):
         self.game = game
