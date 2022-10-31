@@ -8,7 +8,7 @@ class MapView:
 
     def draw(self):
         for pos in self.game.map.world_map:
-            self.draw_cell(pos)
+            self.draw_cell(pos,MAP_SHIFT_X,MAP_SHIFT_Y)
 
-    def draw_cell(self, pos):
-        pg.draw.rect(self.game.screen, COLOR_CELL, (pos[0] * CELL_SIZE, pos[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE), 2)
+    def draw_cell(self, pos,shiftx,shifty):
+        pg.draw.rect(self.game.screen, COLOR_CELL, (shiftx + pos[0] * CELL_SIZE, shifty + pos[1] * CELL_SIZE, CELL_SIZE, CELL_SIZE), 2)

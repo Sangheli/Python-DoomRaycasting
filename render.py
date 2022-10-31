@@ -33,11 +33,12 @@ class Render:
         if self.game.render_type == RenderType.TwoD:
             start_x, start_y = CELL_SIZE * x, CELL_SIZE * y
             width = CELL_SIZE * depth
-            self.game.ray_view.draw(start_x, start_y, width, sin_a, cos_a, COLOR_RAY)
+            self.game.ray_view.draw(start_x, start_y, width, sin_a, cos_a, COLOR_RAY, MAP_SHIFT_X, MAP_SHIFT_Y)
             pass
         elif self.game.render_type == RenderType.Walls:
             if self.game.render_type == RenderType.Walls:
                 color = get_color_by_depth(depth)
-                pg.draw.rect(self.game.screen, color, (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
+                rect = (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height)
+                pg.draw.rect(self.game.screen, color, rect)
         elif self.game.render_type == RenderType.WallsTextures:
             pass

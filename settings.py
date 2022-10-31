@@ -37,7 +37,10 @@ COLOR_RAY_RED = 'red'
 COLOR_CELL = 'darkgray'
 COLOR_PLAYER = 'green'
 COLOR_WINDOW_BACK = 'black'
-CELL_SIZE = 100
+CELL_SIZE = 20
+
+MAP_SHIFT_X = 0
+MAP_SHIFT_Y = 0
 
 
 class RenderType(Enum):
@@ -46,4 +49,4 @@ class RenderType(Enum):
     WallsTextures = 3
 
 
-RENDER_TYPE = RenderType.TwoD
+RENDER_TYPE = RenderType.Walls
