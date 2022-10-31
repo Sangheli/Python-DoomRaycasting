@@ -32,8 +32,18 @@ SCALE = WIDTH // NUM_RAYS
 TEXTURE_SIZE = 256
 HALF_TEXTURE_SIZE = TEXTURE_SIZE // 2
 
+COLOR_RAY = 'yellow'
+COLOR_RAY_RED = 'red'
+COLOR_CELL = 'darkgray'
+COLOR_PLAYER = 'green'
+COLOR_WINDOW_BACK = 'black'
+CELL_SIZE = 100
+
 
 class RenderType(Enum):
     TwoD = 1
     Walls = 2
     WallsTextures = 3
+
+
+RENDER_TYPE = RenderType.TwoD

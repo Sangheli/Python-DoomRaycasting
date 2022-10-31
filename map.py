@@ -1,5 +1,3 @@
-import pygame as pg
-
 _ = False
 mini_map = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -29,7 +27,3 @@ class Map:
                     world_map[(i, j)] = value
 
         return world_map
-
-    def draw(self):
-        [pg.draw.rect(self.game.screen, 'darkgray', (pos[0] * 100, pos[1] * 100, 100, 100), 2)
-         for pos in self.world_map]

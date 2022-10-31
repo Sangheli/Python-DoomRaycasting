@@ -3,6 +3,10 @@ import math
 from settings import *
 
 
+def get_projection_height(depth):
+    return SCREEN_DIST / (depth + 0.0001)
+
+
 class RayCasting:
     def __init__(self, game):
         self.game = game
@@ -81,34 +85,20 @@ class RayCasting:
                 x_hor %= 1
                 offset = (1 - x_hor) if sin_a > 0 else x_hor
 
-            depth = self.update_depth(depth, ray_angle)
-            proj_height = self.get_proj_height(depth)
-            self.render(ox, oy, depth, sin_a, cos_a, ray, proj_height)
+            depth = self.fix_fisheye(depth, ray_angle)
+            proj_height = get_projection_height(depth)
+            self.game.render.render_raycast(ox, oy, depth, sin_a, cos_a, ray, proj_height)
             self.ray_casting_result.append((depth, proj_height, texture, offset))
             ray_angle += DELTA_ANGLE
 
     def get_angle(self):
         return self.game.player.angle - HALF_FOV + 0.0001
 
-    def render(self, ox, oy, depth, sin_a, cos_a, ray,proj_height):
-        if self.game.render_type == RenderType.TwoD:
-            pg.draw.line(self.game.screen, 'yellow', (100 * ox, 100 * oy),
-                         (100 * ox + 100 * depth * cos_a, 100 * oy + 100 * depth * sin_a), 2)
-        else:
-            if self.game.render_type == RenderType.Walls:
-                color = [255 / (1 + depth ** 5 * .00002)] * 3
-                pg.draw.rect(self.game.screen, color, (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height))
-
-    def update_depth(self, depth, ray_angle):
-        if self.game.render_type == RenderType.TwoD:
-            return depth
-        else:
+    def fix_fisheye(self, depth, ray_angle):
+        if self.game.render_type is not RenderType.TwoD:
             depth *= math.cos(self.game.player.angle - ray_angle)  # remove fish eye
-            return depth
 
-    def get_proj_height(self, depth):
-        proj_height = SCREEN_DIST / (depth + 0.0001)
-        return proj_height
+        return depth
 
     def update(self):
         self.ray_cast()
