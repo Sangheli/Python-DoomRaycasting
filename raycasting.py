@@ -68,15 +68,9 @@ class RayCasting:
         _, y_vert, depth_vert, texture_vert = self.process_depth_texture(x_vert, y_vert, dx, dy, depth_vert, delta_depth)
 
         if depth_vert < depth_hor:
-            depth, texture = depth_vert, texture_vert
-            y_vert %= 1
-            offset = y_vert if cos_a > 0 else (1 - y_vert)
+            return depth_vert, texture_vert, y_vert % 1
         else:
-            depth, texture = depth_hor, texture_hor
-            x_hor %= 1
-            offset = (1 - x_hor) if sin_a > 0 else x_hor
-
-        return depth, texture, offset
+            return depth_hor, texture_hor, x_hor % 1
 
     def process_depth_texture(self, x, y, dx, dy, depth, delta_depth):
         texture_shift = 1
