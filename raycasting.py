@@ -32,18 +32,18 @@ class RayCasting:
             final_height = projection_height if projection_height < HEIGHT else HEIGHT
 
             if projection_height < HEIGHT:
-                wall_column_texture = self.make_column(wall_id, texture_offset, 0, TEXTURE_SIZE)
+                wall_column_texture = self.extract_texture_part(wall_id, texture_offset, 0, TEXTURE_SIZE)
                 screen_wall_pos = (i * COLUMN_SIZE_X, HALF_HEIGHT - projection_height // 2)
             else:
                 texture_height = TEXTURE_SIZE * HEIGHT / projection_height
                 startY = HALF_TEXTURE_SIZE - texture_height // 2
-                wall_column_texture = self.make_column(wall_id, texture_offset, startY, texture_height)
+                wall_column_texture = self.extract_texture_part(wall_id, texture_offset, startY, texture_height)
                 screen_wall_pos = (i * COLUMN_SIZE_X, 0)
 
             wall_column_texture = pg.transform.scale(wall_column_texture, (COLUMN_SIZE_X, final_height))
             self.objects_to_render.append((depth, wall_column_texture, screen_wall_pos))
 
-    def make_column(self, wall_id, texture_offset, startY, height):
+    def extract_texture_part(self, wall_id, texture_offset, startY, height):
         return self.textures[wall_id].subsurface(
             texture_offset * (TEXTURE_SIZE - COLUMN_SIZE_X),
             startY,
