@@ -37,7 +37,7 @@ COLOR_RAY_RED = 'red'
 COLOR_CELL = 'darkgray'
 COLOR_PLAYER = 'green'
 COLOR_WINDOW_BACK = 'black'
-CELL_SIZE = 20
+CELL_SIZE = 50
 
 MAP_SHIFT_X = 0
 MAP_SHIFT_Y = 0

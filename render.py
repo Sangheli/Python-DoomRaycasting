@@ -1,3 +1,4 @@
+import numpy as np
 import pygame as pg
 from settings import *
 
@@ -31,9 +32,9 @@ class Render:
 
     def render_raycast(self, x, y, depth, sin_a, cos_a, ray, proj_height):
         if self.game.render_type == RenderType.TwoD:
-            start_x, start_y = CELL_SIZE * x, CELL_SIZE * y
-            width = CELL_SIZE * depth
-            self.game.ray_view.draw(start_x, start_y, width, sin_a, cos_a, COLOR_RAY, MAP_SHIFT_X, MAP_SHIFT_Y)
+            np_start = np.array((x,y)) * CELL_SIZE
+            depth_full = CELL_SIZE * depth
+            self.game.ray_view.draw(np_start, depth_full, sin_a, cos_a, COLOR_RAY, (MAP_SHIFT_X, MAP_SHIFT_Y))
             pass
         elif self.game.render_type == RenderType.Walls:
             if self.game.render_type == RenderType.Walls:
