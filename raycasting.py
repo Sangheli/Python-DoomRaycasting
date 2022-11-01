@@ -61,36 +61,11 @@ class RayCasting:
         return ray_casting_result
 
     def process_ray(self, ox, oy, x_map, y_map, sin_a, cos_a):
-        texture_vert, texture_hor = 1, 1
-        y_hor, dy = (y_map + 1, 1) if sin_a > 0 else (y_map - 1e-6, -1)
-        depth_hor = (y_hor - oy) / sin_a
-        x_hor = ox + depth_hor * cos_a
-        delta_depth = dy / sin_a
-        dx = delta_depth * cos_a
+        x_hor, y_hor, dx, dy, depth_hor, delta_depth = self.process_depth(y_map, sin_a, cos_a, ox, oy)
+        x_hor, _, depth_hor, texture_hor = self.process_depth_texture(x_hor, y_hor, dx, dy, depth_hor, delta_depth)
 
-        for i in range(MAX_DEPTH):
-            tile_hor = int(x_hor), int(y_hor)
-            if tile_hor in self.game.map.world_map:
-                texture_hor = self.game.map.world_map[tile_hor]
-                break
-            x_hor += dx
-            y_hor += dy
-            depth_hor += delta_depth
-
-        x_vert, dx = (x_map + 1, 1) if cos_a > 0 else (x_map - 1e-6, -1)
-        depth_vert = (x_vert - ox) / cos_a
-        y_vert = oy + depth_vert * sin_a
-        delta_depth = dx / cos_a
-        dy = delta_depth * sin_a
-
-        for i in range(MAX_DEPTH):
-            tile_vert = int(x_vert), int(y_vert)
-            if tile_vert in self.game.map.world_map:
-                texture_vert = self.game.map.world_map[tile_vert]
-                break
-            x_vert += dx
-            y_vert += dy
-            depth_vert += delta_depth
+        y_vert, x_vert, dy, dx, depth_vert, delta_depth = self.process_depth(x_map, cos_a, sin_a, oy, ox)
+        _, y_vert, depth_vert, texture_vert = self.process_depth_texture(x_vert, y_vert, dx, dy, depth_vert, delta_depth)
 
         if depth_vert < depth_hor:
             depth, texture = depth_vert, texture_vert
@@ -103,12 +78,36 @@ class RayCasting:
 
         return depth, texture, offset
 
+    def process_depth_texture(self, x, y, dx, dy, depth, delta_depth):
+        texture_shift = 1
+        max_i = 0
+
+        for i in range(MAX_DEPTH):
+            tile_hor = int(x + i * dx), int(y + i * dy)
+            if tile_hor in self.game.map.world_map:
+                texture_shift = self.game.map.world_map[tile_hor]
+                break
+            max_i = i + 1
+
+        x += dx * max_i
+        y += dy * max_i
+        depth += delta_depth * max_i
+        return x, y, depth, texture_shift
+
+    def process_depth(self, map_item, sin_a, cos_a, ox, oy):
+        y_hor, dy = (map_item + 1, 1) if sin_a > 0 else (map_item - 1e-6, -1)
+        depth_hor = (y_hor - oy) / sin_a
+        x_hor = ox + depth_hor * cos_a
+        delta_depth = dy / sin_a
+        dx = delta_depth * cos_a
+        return x_hor, y_hor, dx, dy, depth_hor, delta_depth
+
     def get_angle(self):
         return self.game.player.angle - HALF_FOV + 0.0001
 
     def fix_fisheye(self, depth, ray_angle):
         if self.game.render_type is not RenderType.TwoD:
-            depth *= math.cos(self.game.player.angle - ray_angle)  # remove fish eye
+            depth *= math.cos(self.game.player.angle - ray_angle)
 
         return depth
 
