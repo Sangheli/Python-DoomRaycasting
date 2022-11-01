@@ -34,6 +34,6 @@ class ObjectRenderer:
 
     def render_game_objects(self):
         list_objects = self.game.raycasting.objects_to_render
-        for depth, image, pos in list_objects:
+        for depth, image, screen_pos in list_objects:
             image = multiply_with_color_depth(image, depth)
-            self.screen.blit(image, pos)
+            self.screen.blit(image, screen_pos)

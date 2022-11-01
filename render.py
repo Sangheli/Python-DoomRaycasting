@@ -39,7 +39,7 @@ class Render:
         elif self.game.render_type == RenderType.Walls:
             if self.game.render_type == RenderType.Walls:
                 color = get_color_by_depth(depth)
-                rect = (ray * SCALE, HALF_HEIGHT - proj_height // 2, SCALE, proj_height)
+                rect = (ray * COLUMN_SIZE_X, HALF_HEIGHT - proj_height // 2, COLUMN_SIZE_X, proj_height)
                 pg.draw.rect(self.game.screen, color, rect)
         elif self.game.render_type == RenderType.WallsTextures:
             pass

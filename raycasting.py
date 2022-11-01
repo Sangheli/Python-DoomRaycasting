@@ -7,6 +7,17 @@ def get_projection_height(depth):
     return SCREEN_DIST / (depth + 0.0001)
 
 
+def process_depth(map_item, func_a_1, func_a_2, x, y):
+    line_2, delta2 = (map_item + 1, 1) if func_a_1 > 0 else (map_item - 1e-6, -1)
+    depth = (line_2 - y) / func_a_1
+    line_1 = x + depth * func_a_2
+
+    delta_depth = delta2 / func_a_1
+    delta1 = delta_depth * func_a_2
+
+    return line_1, line_2, delta1, delta2, depth, delta_depth
+
+
 class RayCasting:
     def __init__(self, game):
         self.game = game
@@ -16,26 +27,29 @@ class RayCasting:
 
     def get_objects_to_render(self):
         self.objects_to_render = []
-        for ray, values in enumerate(self.ray_casting_result):
-            depth, proj_height, texture, offset = values
+        for i, values in enumerate(self.ray_casting_result):
+            depth, projection_height, wall_id, texture_offset = values
+            final_height = projection_height if projection_height < HEIGHT else HEIGHT
 
-            if proj_height < HEIGHT:
-                wall_column = self.textures[texture].subsurface(
-                    offset * (TEXTURE_SIZE - SCALE), 0, SCALE, TEXTURE_SIZE
-                )
-
-                wall_column = pg.transform.scale(wall_column, (SCALE, proj_height))
-                wall_pos = (ray * SCALE, HALF_HEIGHT - proj_height // 2)
+            if projection_height < HEIGHT:
+                wall_column_texture = self.make_column(wall_id, texture_offset, 0, TEXTURE_SIZE)
+                screen_wall_pos = (i * COLUMN_SIZE_X, HALF_HEIGHT - projection_height // 2)
             else:
-                texture_height = TEXTURE_SIZE * HEIGHT / proj_height
-                wall_column = self.textures[texture].subsurface(
-                    offset * (TEXTURE_SIZE - SCALE), HALF_TEXTURE_SIZE - texture_height // 2,
-                    SCALE, texture_height
-                )
-                wall_column = pg.transform.scale(wall_column, (SCALE, HEIGHT))
-                wall_pos = (ray * SCALE, 0)
+                texture_height = TEXTURE_SIZE * HEIGHT / projection_height
+                startY = HALF_TEXTURE_SIZE - texture_height // 2
+                wall_column_texture = self.make_column(wall_id, texture_offset, startY, texture_height)
+                screen_wall_pos = (i * COLUMN_SIZE_X, 0)
 
-            self.objects_to_render.append((depth, wall_column, wall_pos))
+            wall_column_texture = pg.transform.scale(wall_column_texture, (COLUMN_SIZE_X, final_height))
+            self.objects_to_render.append((depth, wall_column_texture, screen_wall_pos))
+
+    def make_column(self, wall_id, texture_offset, startY, height):
+        return self.textures[wall_id].subsurface(
+            texture_offset * (TEXTURE_SIZE - COLUMN_SIZE_X),
+            startY,
+            COLUMN_SIZE_X,
+            height
+        )
 
     def ray_cast(self):
         ox, oy = self.game.player.pos
@@ -43,58 +57,50 @@ class RayCasting:
         ray_angle = self.get_angle()
         self.ray_casting_result = self.iterate_rays(ray_angle, ox, oy, x_map, y_map)
 
-    def iterate_rays(self, angle, ox, oy, x_map, y_map):
+    def iterate_rays(self, angle, x, y, x_map, y_map):
         ray_casting_result = []
 
-        for ray in range(NUM_RAYS):
-            ray_angle = angle + ray * DELTA_ANGLE
+        for i in range(NUM_RAYS):
+            ray_angle = angle + i * DELTA_ANGLE
             sin_a, cos_a = math.sin(ray_angle), math.cos(ray_angle)
 
-            depth, texture, offset = self.process_ray(ox, oy, x_map, y_map, sin_a, cos_a)
+            depth, wall_id, texture_offset = self.process_ray(x, y, x_map, y_map, sin_a, cos_a)
+
             depth = self.fix_fisheye(depth, ray_angle)
+            projection_height = get_projection_height(depth)
 
-            proj_height = get_projection_height(depth)
-
-            self.game.render.render_raycast(ox, oy, depth, sin_a, cos_a, ray, proj_height)
-            ray_casting_result.append((depth, proj_height, texture, offset))
+            self.game.render.render_raycast(x, y, depth, sin_a, cos_a, i, projection_height)
+            ray_casting_result.append((depth, projection_height, wall_id, texture_offset))
 
         return ray_casting_result
 
     def process_ray(self, ox, oy, x_map, y_map, sin_a, cos_a):
-        x_hor, y_hor, dx, dy, depth_hor, delta_depth = self.process_depth(y_map, sin_a, cos_a, ox, oy)
-        x_hor, _, depth_hor, texture_hor = self.process_depth_texture(x_hor, y_hor, dx, dy, depth_hor, delta_depth)
+        x_hor, y_hor, dx, dy, depth_x, delta_depth = process_depth(y_map, sin_a, cos_a, ox, oy)
+        x_hor, _, depth_x, wall_id_x = self.process_depth_texture(x_hor, y_hor, dx, dy, depth_x, delta_depth)
 
-        y_vert, x_vert, dy, dx, depth_vert, delta_depth = self.process_depth(x_map, cos_a, sin_a, oy, ox)
-        _, y_vert, depth_vert, texture_vert = self.process_depth_texture(x_vert, y_vert, dx, dy, depth_vert, delta_depth)
+        y_vert, x_vert, dy, dx, depth_y, delta_depth = process_depth(x_map, cos_a, sin_a, oy, ox)
+        _, y_vert, depth_y, wall_id_y = self.process_depth_texture(x_vert, y_vert, dx, dy, depth_y, delta_depth)
 
-        if depth_vert < depth_hor:
-            return depth_vert, texture_vert, y_vert % 1
+        if depth_y < depth_x:
+            return depth_y, wall_id_y, y_vert % 1
         else:
-            return depth_hor, texture_hor, x_hor % 1
+            return depth_x, wall_id_x, x_hor % 1
 
     def process_depth_texture(self, x, y, dx, dy, depth, delta_depth):
-        texture_shift = 1
+        texture_id = 1
         max_i = 0
 
         for i in range(MAX_DEPTH):
             tile_hor = int(x + i * dx), int(y + i * dy)
             if tile_hor in self.game.map.world_map:
-                texture_shift = self.game.map.world_map[tile_hor]
+                texture_id = self.game.map.world_map[tile_hor]
                 break
             max_i = i + 1
 
         x += dx * max_i
         y += dy * max_i
         depth += delta_depth * max_i
-        return x, y, depth, texture_shift
-
-    def process_depth(self, map_item, sin_a, cos_a, ox, oy):
-        y_hor, dy = (map_item + 1, 1) if sin_a > 0 else (map_item - 1e-6, -1)
-        depth_hor = (y_hor - oy) / sin_a
-        x_hor = ox + depth_hor * cos_a
-        delta_depth = dy / sin_a
-        dx = delta_depth * cos_a
-        return x_hor, y_hor, dx, dy, depth_hor, delta_depth
+        return x, y, depth, texture_id
 
     def get_angle(self):
         return self.game.player.angle - HALF_FOV + 0.0001
