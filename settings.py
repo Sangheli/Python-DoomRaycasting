@@ -27,7 +27,7 @@ DELTA_ANGLE = FOV / NUM_RAYS
 MAX_DEPTH = 20
 
 SCREEN_DIST = HALF_WITH / math.tan(HALF_FOV)
-SCALE = WIDTH // NUM_RAYS
+COLUMN_SIZE_X = WIDTH // NUM_RAYS
 
 TEXTURE_SIZE = 256
 HALF_TEXTURE_SIZE = TEXTURE_SIZE // 2
@@ -49,4 +49,4 @@ class RenderType(Enum):
     WallsTextures = 3
 
 
-RENDER_TYPE = RenderType.Walls
+RENDER_TYPE = RenderType.WallsTextures
