@@ -2,7 +2,7 @@ import pygame as pg
 from settings import *
 
 
-def multiply_with_color_depth(image, depth):
+def multiply_with_color_depth(image, depth, horizontal):
     color = (255 / (1 + depth ** 5 * .00002)) / 255
     if color >= 0.95:
         return image
@@ -34,6 +34,6 @@ class ObjectRenderer:
 
     def render_game_objects(self):
         list_objects = self.game.raycasting.objects_to_render
-        for depth, image, screen_pos in list_objects:
-            image = multiply_with_color_depth(image, depth)
+        for depth, image, screen_pos,horizontal in list_objects:
+            image = multiply_with_color_depth(image, depth, horizontal)
             self.screen.blit(image, screen_pos)

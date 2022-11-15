@@ -28,7 +28,7 @@ class RayCasting:
     def get_objects_to_render(self):
         self.objects_to_render = []
         for i, values in enumerate(self.ray_casting_result):
-            depth, projection_height, wall_id, texture_offset = values
+            depth, projection_height, wall_id, texture_offset,horizontal = values
             final_height = projection_height if projection_height < HEIGHT else HEIGHT
 
             if projection_height < HEIGHT:
@@ -41,7 +41,7 @@ class RayCasting:
                 screen_wall_pos = (i * COLUMN_SIZE_X, 0)
 
             wall_column_texture = pg.transform.scale(wall_column_texture, (COLUMN_SIZE_X, final_height))
-            self.objects_to_render.append((depth, wall_column_texture, screen_wall_pos))
+            self.objects_to_render.append((depth, wall_column_texture, screen_wall_pos,horizontal))
 
     def extract_texture_part(self, wall_id, texture_offset, startY, height):
         return self.textures[wall_id].subsurface(
@@ -64,13 +64,13 @@ class RayCasting:
             ray_angle = angle + i * DELTA_ANGLE
             sin_a, cos_a = math.sin(ray_angle), math.cos(ray_angle)
 
-            depth, wall_id, texture_offset = self.process_ray(x, y, x_map, y_map, sin_a, cos_a)
+            depth, wall_id, texture_offset,horizontal = self.process_ray(x, y, x_map, y_map, sin_a, cos_a)
 
             depth = self.fix_fisheye(depth, ray_angle)
             projection_height = get_projection_height(depth)
 
             self.game.render.render_raycast(x, y, depth, sin_a, cos_a, i, projection_height)
-            ray_casting_result.append((depth, projection_height, wall_id, texture_offset))
+            ray_casting_result.append((depth, projection_height, wall_id, texture_offset,horizontal))
 
         return ray_casting_result
 
@@ -82,9 +82,9 @@ class RayCasting:
         _, y_vert, depth_y, wall_id_y = self.process_depth_texture(x_vert, y_vert, dx, dy, depth_y, delta_depth)
 
         if depth_y < depth_x:
-            return depth_y, wall_id_y, y_vert % 1
+            return depth_y, wall_id_y, y_vert % 1,0.5
         else:
-            return depth_x, wall_id_x, x_hor % 1
+            return depth_x, wall_id_x, x_hor % 1,0
 
     def process_depth_texture(self, x, y, dx, dy, depth, delta_depth):
         texture_id = 1
