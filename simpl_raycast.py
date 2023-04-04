@@ -1,6 +1,7 @@
 import sys
 import simple_raycast.render2D as render2D
 from simple_raycast.variables import *
+import simple_raycast.collision as _collision_
 
 pygame.init()
 
@@ -35,21 +36,6 @@ def cast_rays():
 
         start_angle += STEP_ANGLE
 
-def check_collission(player_x,player_y):
-    col = int(player_x / TILE_SIZE)
-    row = int(player_y / TILE_SIZE)
-    index = row * MAP_SIZE + col
-
-    if MAP[index] == wallID:
-        if forward == True:
-            player_x -= -math.sin(player_angle) * 5
-            player_y -= math.cos(player_angle) * 5
-        else:
-            player_x += -math.sin(player_angle) * 5
-            player_y += math.cos(player_angle) * 5
-
-    return player_x,player_y
-
 def input_scan(player_angle,player_x,player_y,forward):
     keys = pygame.key.get_pressed()
 
@@ -72,7 +58,7 @@ while True:
             pygame.quit()
             sys.exit(0)
 
-    player_x,player_y = check_collission(player_x,player_y)
+    player_x,player_y = _collision_.check_collision(player_x, player_y)
     render2D.draw_2D_map(player_x,player_y,player_angle)
     draw_3D_back()
     cast_rays()
