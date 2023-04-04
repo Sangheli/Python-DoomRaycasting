@@ -2,6 +2,7 @@ import sys
 import simple_raycast.render2D as render2D
 from simple_raycast.variables import *
 import simple_raycast.collision as _collision_
+import simple_raycast.input as _input_
 
 pygame.init()
 
@@ -36,22 +37,6 @@ def cast_rays():
 
         start_angle += STEP_ANGLE
 
-def input_scan(player_angle,player_x,player_y,forward):
-    keys = pygame.key.get_pressed()
-
-    if keys[pygame.K_LEFT]: player_angle -= 0.1
-    if keys[pygame.K_RIGHT]: player_angle += 0.1
-    if keys[pygame.K_UP]:
-        forward = True
-        player_x += -math.sin(player_angle) * 5
-        player_y += math.cos(player_angle) * 5
-    if keys[pygame.K_DOWN]:
-        forward = False
-        player_x -= -math.sin(player_angle) * 5
-        player_y -= math.cos(player_angle) * 5
-
-    return player_angle,player_x,player_y,forward
-
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -62,7 +47,7 @@ while True:
     render2D.draw_2D_map(player_x,player_y,player_angle)
     draw_3D_back()
     cast_rays()
-    player_angle,player_x,player_y,forward = input_scan(player_angle,player_x,player_y,forward)
+    player_angle,player_x,player_y,forward = _input_.input_scan(player_angle,player_x,player_y,forward)
     clock.tick(60)
     fps = str(int(clock.get_fps()))
     font = pygame.font.SysFont('Monospace Regular', 30)
