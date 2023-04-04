@@ -17,7 +17,8 @@ def cast_rays(player_x, player_y):
 
     for ray in range(_var_.CASTED_RAYS):
         angle = start_angle + ray * _var_.STEP_ANGLE
-        for depth in range(_var_.MAX_DEPTH):
+        # Проверяем луч на каждом из указанных шагов глубины
+        for depth in range(0,_var_.MAX_DEPTH,2):
             ray_x, ray_y = get_ray_projection(player_x, player_y, angle, depth)
             col, row = map.get_coordinates(ray_x, ray_y)
             if map.is_wall(col, row):
