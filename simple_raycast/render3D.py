@@ -1,6 +1,8 @@
 import pygame
 import math
 import simple_raycast.variables as _var_
+import simple_raycast.color as _color_
+import numpy as np
 
 def draw_3D_back():
     pygame.draw.rect(_var_.win, (100, 0, 0),
@@ -10,10 +12,10 @@ def draw_3D_back():
 
 
 def draw_3D_wall_segment(ray, depth, start_angle):
-    color = 50 / (1 + depth * depth * 0.0001)
+    color = np.array(_color_.wall_color) / (1 + depth * depth * 0.0001)
     depth *= math.cos(_var_.player_angle - start_angle)
     wall_height = 21000 / (depth + 0.0001)
     if wall_height > _var_.SCREEN_HEIGHT: wall_height == _var_.SCREEN_HEIGHT
 
-    pygame.draw.rect(_var_.win, (color, color, color), (
+    pygame.draw.rect(_var_.win, color, (
         _var_.SCREEN_HEIGHT + ray * _var_.SCALE, (_var_.SCREEN_HEIGHT / 2) - wall_height / 2, _var_.SCALE, wall_height))
