@@ -1,43 +1,8 @@
-import pygame
 import sys
-import math
-import simple_raycast.color as my
+import simple_raycast.render2D as render2D
 from simple_raycast.variables import *
 
 pygame.init()
-
-def draw_2D_cell(col,row):
-    index = row * MAP_SIZE + col
-    cur_color = my.cell1 if MAP[index] == wallID else my.cell2
-    pygame.draw.rect(win, cur_color, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE - 2, TILE_SIZE - 2))
-
-def draw_2D_player_base_rays():
-    pygame.draw.line(win, my.green, (player_x, player_y),
-                     (player_x - math.sin(player_angle) * 50, player_y + math.cos(player_angle) * 50), 3)
-    pygame.draw.line(win, my.green, (player_x, player_y), (
-        player_x - math.sin(player_angle - HALF_FOV) * 50, player_y + math.cos(player_angle - HALF_FOV) * 50), 3)
-    pygame.draw.line(win, my.green, (player_x, player_y), (
-        player_x - math.sin(player_angle + HALF_FOV) * 50, player_y + math.cos(player_angle + HALF_FOV) * 50), 3)
-
-def draw_2D_map():
-    if not draw2D: return
-
-    #back
-    pygame.draw.rect(win, (0, 0, 0), (0, 0, SCREEN_HEIGHT, SCREEN_HEIGHT))
-
-    #cells
-    for row in range(MAP_SIZE):
-        for col in range(MAP_SIZE):
-            draw_2D_cell(col,row)
-
-    #player dot
-    pygame.draw.circle(win, my.red, (int(player_x), int(player_y)), 8)
-    draw_2D_player_base_rays()
-
-def draw_2D_rays(col, row, target_x, target_y):
-    if not draw2D: return
-    pygame.draw.rect(win, my.green, (col * TILE_SIZE, row * TILE_SIZE, TILE_SIZE - 2, TILE_SIZE - 2))
-    pygame.draw.line(win, my.yellow, (player_x, player_y), (target_x, target_y))
 
 def draw_3D_back():
     pygame.draw.rect(win, (100, 0, 0), (SHIFT_WIDTH, SCREEN_HEIGHT / 2, SCREEN_HEIGHT, SCREEN_HEIGHT))
@@ -64,7 +29,7 @@ def cast_rays():
             index = row * MAP_SIZE + col
 
             if MAP[index] == wallID:
-                draw_2D_rays(col, row, target_x, target_y)
+                render2D.draw_2D_rays(col, row, target_x, target_y,player_x,player_y)
                 draw_3D_wall_segment(ray, depth, start_angle)
                 break
 
@@ -108,7 +73,7 @@ while True:
             sys.exit(0)
 
     player_x,player_y = check_collission(player_x,player_y)
-    draw_2D_map()
+    render2D.draw_2D_map(player_x,player_y,player_angle)
     draw_3D_back()
     cast_rays()
     player_angle,player_x,player_y,forward = input_scan(player_angle,player_x,player_y,forward)
