@@ -1,12 +1,12 @@
 import pygame
+import simple_raycast.map as map
 import simple_raycast.color as _color_
 import simple_raycast.variables as _var_
 import math
 
 
 def draw_2D_cell(col, row):
-    index = row * _var_.MAP_SIZE + col
-    cur_color = _color_.cell1 if _var_.MAP[index] == _var_.wallID else _color_.cell2
+    cur_color = _color_.cell1 if map.is_wall(col,row) else _color_.cell2
     pygame.draw.rect(_var_.win, cur_color,
                      (col * _var_.TILE_SIZE, row * _var_.TILE_SIZE, _var_.TILE_SIZE - 2, _var_.TILE_SIZE - 2))
 
@@ -29,8 +29,8 @@ def draw_2D_map(player_x, player_y, player_angle):
     pygame.draw.rect(_var_.win, _color_.black, (0, 0, _var_.SCREEN_HEIGHT, _var_.SCREEN_HEIGHT))
 
     # cells
-    for row in range(_var_.MAP_SIZE):
-        for col in range(_var_.MAP_SIZE):
+    for row in range(map.MAP_SIZE):
+        for col in range(map.MAP_SIZE):
             draw_2D_cell(col, row)
 
     # player dot

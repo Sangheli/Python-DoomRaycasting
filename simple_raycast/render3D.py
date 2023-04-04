@@ -4,6 +4,7 @@ import simple_raycast.variables as _var_
 import simple_raycast.color as _color_
 import numpy as np
 
+
 def draw_3D_back():
     pygame.draw.rect(_var_.win, (100, 0, 0),
                      (_var_.SHIFT_WIDTH, _var_.SCREEN_HEIGHT / 2, _var_.SCREEN_HEIGHT, _var_.SCREEN_HEIGHT))
