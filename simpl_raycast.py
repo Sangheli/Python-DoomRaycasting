@@ -43,7 +43,7 @@ while True:
             pygame.quit()
             sys.exit(0)
 
-    player_x,player_y = _collision_.check_collision(player_x, player_y)
+    player_x,player_y = _collision_.check_collision(player_x, player_y,player_angle,forward)
     render2D.draw_2D_map(player_x,player_y,player_angle)
     draw_3D_back()
     cast_rays()
