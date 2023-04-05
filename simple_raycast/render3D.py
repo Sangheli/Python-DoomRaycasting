@@ -6,9 +6,9 @@ import numpy as np
 
 
 def draw_3D_back():
-    pygame.draw.rect(_var_.win, (100, 0, 0),
+    pygame.draw.rect(_var_.win, _color_.backGround,
                      (_var_.SHIFT_WIDTH, _var_.SCREEN_HEIGHT / 2, _var_.SCREEN_HEIGHT, _var_.SCREEN_HEIGHT))
-    pygame.draw.rect(_var_.win, (200, 0, 0),
+    pygame.draw.rect(_var_.win, _color_.backSky,
                      (_var_.SHIFT_WIDTH, -_var_.SCREEN_HEIGHT / 2, _var_.SCREEN_HEIGHT, _var_.SCREEN_HEIGHT))
 
 
@@ -43,5 +43,5 @@ def draw_(color, rect):
 
 def draw_3D_wall_segment(ray, depth, angle):
     color = get_shading(_color_.wall_color, depth)
-    rect = get_wall_segment(ray, depth, angle)
+    rect  = get_wall_segment(ray, depth, angle)
     draw_(color, rect)
