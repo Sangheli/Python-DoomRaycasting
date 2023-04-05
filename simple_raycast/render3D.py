@@ -34,14 +34,23 @@ def get_wall_segment(ray, depth, angle):
     return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_SIZE_PX, height])
 
 
-def draw_(color, rect):
-    shift_x = _var_.screen_shift[0] + rect[0]
-    shift_y = _var_.screen_shift[1] - rect[1]
-    new_rect = np.array([shift_x, shift_y, rect[2], rect[3]])
+def draw_reflection(rect, depth):
+    rect[1] = rect[1] + rect[3]
+    shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+    pygame.draw.rect(shape_surf, get_shading(_color_.color_reflection, depth), shape_surf.get_rect())
+    _var_.win.blit(shape_surf, rect)
+
+
+def draw_normal(color, new_rect):
+    shift_x = _var_.screen_shift[0] + new_rect[0]
+    shift_y = _var_.screen_shift[1] - new_rect[1]
+    new_rect = np.array([shift_x, shift_y, new_rect[2], new_rect[3]])
     pygame.draw.rect(_var_.win, color, new_rect)
+    return new_rect
 
 
 def draw_3D_wall_segment(ray, depth, angle):
     color = get_shading(_color_.wall_color, depth)
     rect  = get_wall_segment(ray, depth, angle)
-    draw_(color, rect)
+    world_rect = draw_normal(color, rect)
+    draw_reflection(world_rect, depth)
