@@ -3,13 +3,31 @@ import math
 import simple_raycast.variables as _var_
 import simple_raycast.color as _color_
 import numpy as np
+import simple_raycast.txloader as txloader
+
+sky_image = txloader.load_sky_image()
 
 
-def draw_3D_back():
-    pygame.draw.rect(_var_.win, _color_.backGround,
-                     (_var_.SCREEN_START[0], _var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
+def draw_solid_sky():
     pygame.draw.rect(_var_.win, _color_.backSky,
                      (_var_.SCREEN_START[0], -_var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
+
+
+def draw_sky_image(angle_rel):
+    sky_offset = (50 * angle_rel) % _var_.SCREEN_WIDTH
+    _var_.win.blit(sky_image, (_var_.SCREEN_START[0] -sky_offset, 0))
+    _var_.win.blit(sky_image, (_var_.SCREEN_START[0] -sky_offset + _var_.SCREEN_WIDTH, 0))
+
+
+def draw_solid_floor():
+    pygame.draw.rect(_var_.win, _color_.backGround,
+                     (_var_.SCREEN_START[0], _var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
+
+
+def draw_3D_back(player_angle):
+    draw_sky_image(player_angle)
+    draw_solid_floor()
+    # draw_solid_sky()
 
 
 def get_shading(color, depth):
