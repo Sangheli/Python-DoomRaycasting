@@ -22,8 +22,8 @@ STEP_ANGLE = FOV / CASTED_RAYS
 # WALL_SECTOR_SIZE_PX = (SCREEN_WIDTH / 2) / CASTED_RAYS
 WALL_SECTOR_SIZE_PX = 4
 
-player_x = (SCREEN_WIDTH / 2) / 2
-player_y = (SCREEN_WIDTH / 2) / 2
+player_x = 240
+player_y = 240
 player_angle = math.pi
 
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
