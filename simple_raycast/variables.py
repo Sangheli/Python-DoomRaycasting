@@ -1,5 +1,6 @@
 import math
 import pygame
+import numpy as np
 
 forward = True
 draw2D = True
@@ -18,7 +19,8 @@ FOV = math.pi / 3
 HALF_FOV = FOV / 2
 CASTED_RAYS = 120
 STEP_ANGLE = FOV / CASTED_RAYS
-WALL_SECTOR_SIZE_PX = (SCREEN_WIDTH / 2) / CASTED_RAYS
+# WALL_SECTOR_SIZE_PX = (SCREEN_WIDTH / 2) / CASTED_RAYS
+WALL_SECTOR_SIZE_PX = 4
 
 player_x = (SCREEN_WIDTH / 2) / 2
 player_y = (SCREEN_WIDTH / 2) / 2
@@ -26,3 +28,5 @@ player_angle = math.pi
 
 win = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Raycasting by Network Skeleton")
+
+screen_shift = np.array([SHIFT_WIDTH, SCREEN_HEIGHT / 2])

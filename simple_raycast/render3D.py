@@ -27,14 +27,21 @@ def get_wall_sector_height(depth, angle):
     return wall_sector_height_PX
 
 
-def get_wall_segment_rect(ray, wall_sector_height_PX):
-    screen_pos_x = _var_.SCREEN_HEIGHT + ray * _var_.WALL_SECTOR_SIZE_PX;
-    screen_pos_Y = _var_.SCREEN_HEIGHT / 2 - wall_sector_height_PX / 2;
-    return screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_SIZE_PX, wall_sector_height_PX
+def get_wall_segment(ray, depth, angle):
+    height = get_wall_sector_height(depth, angle)
+    screen_pos_x = ray * _var_.WALL_SECTOR_SIZE_PX;
+    screen_pos_Y = height / 2;
+    return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_SIZE_PX, height])
+
+
+def draw_(color, rect):
+    shift_x = _var_.screen_shift[0] + rect[0]
+    shift_y = _var_.screen_shift[1] - rect[1]
+    new_rect = np.array([shift_x, shift_y, rect[2], rect[3]])
+    pygame.draw.rect(_var_.win, color, new_rect)
 
 
 def draw_3D_wall_segment(ray, depth, angle):
     color = get_shading(_color_.wall_color, depth)
-    wall_sector_height_PX = get_wall_sector_height(depth, angle)
-    rect = get_wall_segment_rect(ray, wall_sector_height_PX)
-    pygame.draw.rect(_var_.win, color, rect)
+    rect = get_wall_segment(ray, depth, angle)
+    draw_(color, rect)
