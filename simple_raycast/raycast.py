@@ -12,6 +12,7 @@ def get_ray_projection(player_x, player_y, _sin,_cos, depth):
     return ray_x, ray_y
 
 
+# TODO оптизировать бросок лучей, сначала по поиску ячеек сетки, а уже потом искать длину луча
 def cast_rays(player_x, player_y):
     start_angle = _var_.player_angle - _var_.HALF_FOV
 
