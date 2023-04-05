@@ -2,7 +2,7 @@ import math
 import pygame
 import numpy as np
 
-draw2D = False
+draw2D = True
 
 # Map parameters
 TILE_SIZE = 60
@@ -11,6 +11,8 @@ MAP_SIZE = 8
 # render parameters
 SCREEN_WIDTH, SCREEN_HEIGHT = 480, 480
 SCREEN_START = np.array([SCREEN_WIDTH if draw2D else 0, SCREEN_HEIGHT / 2])
+TILE_MULT = SCREEN_WIDTH/480
+TILE_SIZE_2D = TILE_MULT * TILE_SIZE
 
 CASTED_RAYS = 120
 MAX_DEPTH = int(MAP_SIZE * TILE_SIZE)

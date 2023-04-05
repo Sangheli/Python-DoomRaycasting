@@ -8,7 +8,7 @@ import math
 def draw_2D_cell(col, row):
     cur_color = _color_.cell1 if map.is_wall(col,row) else _color_.cell2
     pygame.draw.rect(_var_.win, cur_color,
-                     (col * _var_.TILE_SIZE, row * _var_.TILE_SIZE, _var_.TILE_SIZE - 2, _var_.TILE_SIZE - 2))
+                     (col * _var_.TILE_SIZE_2D, row * _var_.TILE_SIZE_2D, _var_.TILE_SIZE_2D - 2, _var_.TILE_SIZE_2D - 2))
 
 
 def draw_2D_player_base_rays(player_x, player_y, player_angle):
@@ -34,12 +34,12 @@ def draw_2D_map(player_x, player_y, player_angle):
             draw_2D_cell(col, row)
 
     # player dot
-    pygame.draw.circle(_var_.win, _color_.red, (int(player_x), int(player_y)), 8)
-    draw_2D_player_base_rays(player_x, player_y, player_angle)
+    pygame.draw.circle(_var_.win, _color_.red, (int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT)), 8)
+    draw_2D_player_base_rays(int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT), player_angle)
 
 
 def draw_2D_rays(col, row, target_x, target_y, player_x, player_y):
     if not _var_.draw2D: return
     pygame.draw.rect(_var_.win, _color_.green,
-                     (col * _var_.TILE_SIZE, row * _var_.TILE_SIZE, _var_.TILE_SIZE - 2, _var_.TILE_SIZE - 2))
-    pygame.draw.line(_var_.win, _color_.yellow, (player_x, player_y), (target_x, target_y))
+                     (col * _var_.TILE_SIZE_2D, row * _var_.TILE_SIZE_2D, _var_.TILE_SIZE_2D - 2, _var_.TILE_SIZE_2D - 2))
+    pygame.draw.line(_var_.win, _color_.yellow, (int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT)), (int(target_x*_var_.TILE_MULT), int(target_y*_var_.TILE_MULT)))
