@@ -15,8 +15,8 @@ def draw_solid_sky():
 
 def draw_sky_image(angle_rel):
     sky_offset = (50 * angle_rel) % _var_.SCREEN_WIDTH
-    _var_.win.blit(sky_image, (_var_.SCREEN_START[0] -sky_offset, 0))
-    _var_.win.blit(sky_image, (_var_.SCREEN_START[0] -sky_offset + _var_.SCREEN_WIDTH, 0))
+    _var_.win.blit(sky_image, (_var_.SCREEN_START[0] - sky_offset, 0))
+    _var_.win.blit(sky_image, (_var_.SCREEN_START[0] - sky_offset + _var_.SCREEN_WIDTH, 0))
 
 
 def draw_solid_floor():
@@ -53,22 +53,27 @@ def get_wall_segment(ray, depth, angle):
 
 
 def draw_reflection(rect, depth):
-    rect[1] = rect[1] + rect[3]
-    shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
+    rect_reflected = np.array(rect)
+    rect_reflected[1] = rect_reflected[1] + rect_reflected[3]
+    shape_surf = pygame.Surface(pygame.Rect(rect_reflected).size, pygame.SRCALPHA)
     pygame.draw.rect(shape_surf, get_shading(_color_.color_reflection, depth), shape_surf.get_rect())
-    _var_.win.blit(shape_surf, rect)
+    _var_.win.blit(shape_surf, rect_reflected)
 
 
-def draw_normal(color, new_rect):
-    shift_x = _var_.SCREEN_START[0] + new_rect[0]
-    shift_y = _var_.SCREEN_START[1] - new_rect[1]
-    new_rect = np.array([shift_x, shift_y, new_rect[2], new_rect[3]])
-    pygame.draw.rect(_var_.win, color, new_rect)
-    return new_rect
+def get_world_rect(rect):
+    shift_x = _var_.SCREEN_START[0] + rect[0]
+    shift_y = _var_.SCREEN_START[1] - rect[1]
+    return np.array([shift_x, shift_y, rect[2], rect[3]])
+
+
+def draw_wall_solid_color(rect, depth):
+    color = get_shading(_color_.wall_color, depth)
+    pygame.draw.rect(_var_.win, color, rect)
 
 
 def draw_3D_wall_segment(ray, depth, angle):
-    color = get_shading(_color_.wall_color, depth)
-    rect  = get_wall_segment(ray, depth, angle)
-    world_rect = draw_normal(color, rect)
+    rect = get_wall_segment(ray, depth, angle)
+    world_rect = get_world_rect(rect)
+
+    draw_wall_solid_color(world_rect, depth)
     draw_reflection(world_rect, depth)
