@@ -2,6 +2,7 @@ import simple_raycast.variables as _var_
 
 wallID = "#"
 MAP_SIZE = _var_.MAP_SIZE
+MAX_INDEX = MAP_SIZE * MAP_SIZE
 
 MAP = (
     '########'
@@ -24,4 +25,7 @@ def get_coordinates(pos_x, pos_y):
 
 def is_wall(col, row):
     index = row * _var_.MAP_SIZE + col
-    return MAP[index] == wallID
+    if index > MAX_INDEX - 1:
+        return False
+    else:
+        return MAP[index] == wallID
