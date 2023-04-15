@@ -11,15 +11,15 @@ def draw_2D_cell(col, row):
                      (col * _var_.TILE_SIZE_2D, row * _var_.TILE_SIZE_2D, _var_.TILE_SIZE_2D - 2, _var_.TILE_SIZE_2D - 2))
 
 
-def draw_2D_player_base_rays(player_x, player_y, player_angle):
-    pygame.draw.line(_var_.win, _color_.green, (player_x, player_y),
-                     (player_x - math.sin(player_angle) * 50, player_y + math.cos(player_angle) * 50), 3)
-    pygame.draw.line(_var_.win, _color_.green, (player_x, player_y), (
-        player_x - math.sin(player_angle - _var_.HALF_FOV) * 50,
-        player_y + math.cos(player_angle - _var_.HALF_FOV) * 50), 3)
-    pygame.draw.line(_var_.win, _color_.green, (player_x, player_y), (
-        player_x - math.sin(player_angle + _var_.HALF_FOV) * 50,
-        player_y + math.cos(player_angle + _var_.HALF_FOV) * 50), 3)
+def draw_2D_player_base_rays(ox, oy, angle):
+    pygame.draw.line(_var_.win, _color_.green, (ox, oy),
+                     (ox + math.cos(angle) * 50, oy + math.sin(angle) * 50), 3)
+    pygame.draw.line(_var_.win, _color_.green, (ox, oy), (
+        ox + math.cos(angle - _var_.HALF_FOV) * 50,
+        oy + math.sin(angle - _var_.HALF_FOV) * 50), 3)
+    pygame.draw.line(_var_.win, _color_.green, (ox, oy), (
+        ox + math.cos(angle + _var_.HALF_FOV) * 50,
+        oy + math.sin(angle + _var_.HALF_FOV) * 50), 3)
 
 
 def draw_2D_map(player_x, player_y, player_angle):
@@ -38,8 +38,8 @@ def draw_2D_map(player_x, player_y, player_angle):
     draw_2D_player_base_rays(int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT), player_angle)
 
 
-def draw_2D_rays(col, row, target_x, target_y, player_x, player_y):
+def draw_ray(ox, oy, px, py):
     if not _var_.draw2D: return
-    pygame.draw.rect(_var_.win, _color_.green,
-                     (col * _var_.TILE_SIZE_2D, row * _var_.TILE_SIZE_2D, _var_.TILE_SIZE_2D - 2, _var_.TILE_SIZE_2D - 2))
-    pygame.draw.line(_var_.win, _color_.yellow, (int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT)), (int(target_x*_var_.TILE_MULT), int(target_y*_var_.TILE_MULT)))
+    pygame.draw.line(_var_.win, _color_.yellow,
+                     (int(ox * _var_.TILE_MULT), int(oy * _var_.TILE_MULT)),
+                     (int(px * _var_.TILE_MULT), int(py * _var_.TILE_MULT)))

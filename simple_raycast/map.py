@@ -18,14 +18,10 @@ MAP = (
 
 # Получаем координаты в 2Д карте(индексы)
 def get_coordinates(pos_x, pos_y):
-    col = int(pos_x / _var_.TILE_SIZE)
-    row = int(pos_y / _var_.TILE_SIZE)
+    col = pos_x // _var_.TILE_SIZE
+    row = pos_y // _var_.TILE_SIZE
     return col, row
 
-def get_coordinates_float(pos_x, pos_y):
-    col = pos_x / _var_.TILE_SIZE
-    row = pos_y / _var_.TILE_SIZE
-    return col, row
 
 def is_wall(col, row):
     col = int(col)

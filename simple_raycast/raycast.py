@@ -20,73 +20,67 @@ def print_pos(x, y):
     _var_.win.blit(textsurface, (30, 0))
 
 
-# Получаем проекции треугольника(x,y), исходя из угла и длины гипотенузы(angle,depth)
-def get_ray_projection(player_x, player_y, _sin, _cos, depth):
-    ray_x = player_x - _sin * depth
-    ray_y = player_y + _cos * depth
-    return ray_x, ray_y
+def mapping(a, b):
+    return (a // _var_.TILE_SIZE) * _var_.TILE_SIZE, (b // _var_.TILE_SIZE) * _var_.TILE_SIZE
 
 
-# TODO оптизировать бросок лучей, сначала по поиску ячеек сетки, а уже потом искать длину луча
-def cast_rays(player_x, player_y):
-    cast_rays_new(player_x,player_y)
-    return
-
-    count = 0
-    start_angle = _var_.player_angle - _var_.HALF_FOV
-
-    for ray_index in range(_var_.CASTED_RAYS):
-        angle = start_angle + ray_index * _var_.STEP_ANGLE
-        _sin = math.sin(angle)
-        _cos = math.cos(angle)
-        # Проверяем луч на каждом из указанных шагов глубины
-        for depth in range(0, _var_.MAX_DEPTH):
-            count += 1
-            ray_x, ray_y = get_ray_projection(player_x, player_y, _sin, _cos, depth)
-            col, row = map.get_coordinates(ray_x, ray_y)
-            if map.is_wall(col, row):
-                render2D.draw_2D_rays(col, row, ray_x, ray_y, player_x, player_y)
-                render3D.draw_3D_wall_segment(ray_index, depth, angle)
-                break
-
-    print_raycount(count)
+def get_sin_cos(angle):
+    sin_a = math.sin(angle)
+    cos_a = math.cos(angle)
+    return sin_a if sin_a else 0.000001, cos_a if cos_a else 0.000001
 
 
-def cast_rays_new(player_x, player_y):
-    count = 0
-    depth_step = 10
-
-    start_angle = _var_.player_angle - _var_.HALF_FOV
-
-    for ray_index in range(_var_.CASTED_RAYS):
-        big_count = 0
-        angle = start_angle + ray_index * _var_.STEP_ANGLE
-        _sin = math.sin(angle)
-        _cos = math.cos(angle)
-        # Проверяем луч на каждом из указанных шагов глубины
-        for depth in range(0, _var_.MAX_DEPTH, depth_step):
-            big_count += 1
-            ray_x, ray_y = get_ray_projection(player_x, player_y, _sin, _cos, depth)
-            col, row = map.get_coordinates(ray_x, ray_y)
-            if map.is_wall(col, row):
-                count += big_count - 1 + cast_subrays(player_x, player_y, _sin, _cos, ray_index, angle,
-                                                      depth - depth_step)
-                break
-
-    print_raycount(count)
-
-
-def cast_subrays(player_x, player_y, _sin, _cos, ray_index, angle, start):
+def get_data_vert(ox, oy, xm, ym, sin_a, cos_a, WIDTH):
     subCount = 0
-    if start < 0: start = 0
-    for depth in range(start, _var_.MAX_DEPTH, 1):
+    x, dx = (xm + _var_.TILE_SIZE, 1) if cos_a >= 0 else (xm, -1)
+    # Проход по каждому из вертикальных столбцов
+    for i in range(0, WIDTH, _var_.TILE_SIZE):
         subCount += 1
-        ray_x, ray_y = get_ray_projection(player_x, player_y, _sin, _cos, depth)
-        col, row = map.get_coordinates(ray_x, ray_y)
-        # Проверяем луч на каждом из указанных шагов глубины
-        if map.is_wall(col, row):
-            render2D.draw_2D_rays(col, row, ray_x, ray_y, player_x, player_y)
-            render3D.draw_3D_wall_segment(ray_index, depth, angle)
-            return subCount
+        depth_v = (x - ox) / cos_a
+        y = oy + depth_v * sin_a
+        col, row = map.get_coordinates(x + dx, y)
+        if map.is_wall(col, row): break
+        x += dx * _var_.TILE_SIZE
 
-    return 0
+    return x, y, depth_v, subCount
+
+
+def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT):
+    subCount = 0
+    y, dy = (ym + _var_.TILE_SIZE, 1) if sin_a >= 0 else (ym, -1)
+    # Проход по каждой из горзионтальных строк
+    for i in range(0, HEIGHT, _var_.TILE_SIZE):
+        subCount += 1
+        depth_h = (y - oy) / sin_a
+        x = ox + depth_h * cos_a
+        col, row = map.get_coordinates(x, y + dy)
+        if map.is_wall(col, row): break
+        y += dy * _var_.TILE_SIZE
+
+    return x, y, depth_h, subCount
+
+
+def cast_rays(player_x, player_y):
+    count = 0
+    WIDTH = _var_.MAP_SIZE * _var_.TILE_SIZE
+    HEIGHT = _var_.MAP_SIZE * _var_.TILE_SIZE
+    xm, ym = mapping(player_x, player_y)
+    start_angle = _var_.player_angle - _var_.HALF_FOV
+
+    for ray_index in range(_var_.CASTED_RAYS):
+        angle = start_angle + ray_index * _var_.STEP_ANGLE
+        sin_a, cos_a = get_sin_cos(angle)
+
+        x1, y1, depth_v, subCount1 = get_data_vert(player_x, player_y, xm, ym, sin_a, cos_a, WIDTH)
+        x2, y2, depth_h, subCount2 = get_data_hori(player_x, player_y, xm, ym, sin_a, cos_a, HEIGHT)
+        isVert = depth_v < depth_h
+
+        x = x1 if isVert else x2
+        y = y1 if isVert else y2
+        depth = depth_v if isVert else depth_h
+
+        render2D.draw_ray(player_x, player_y, x, y)
+        render3D.draw_3D_wall_segment(ray_index, depth, angle)
+        count += subCount1 + subCount2
+
+    print_raycount(count)
