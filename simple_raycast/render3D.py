@@ -40,9 +40,8 @@ def get_fixed_fisheye_depth(depth, angle):
 
 def get_wall_sector_height(depth, angle):
     depth = get_fixed_fisheye_depth(depth, angle)
-    wall_height_px = _var_.WALL_HEIGHT_BASE / (depth + 0.0001)
-    if wall_height_px > _var_.SCREEN_HEIGHT: wall_height_px == _var_.SCREEN_HEIGHT
-    return wall_height_px
+    depth = max(depth, 0.0001)  # защита от zero div
+    return min(int(_var_.WALL_HEIGHT_BASE / depth), _var_.SCREEN_HEIGHT)  # защита от гигантского значения высоты стены
 
 
 def get_wall_segment(ray, depth, angle):
