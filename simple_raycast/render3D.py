@@ -8,6 +8,15 @@ import simple_raycast.txloader as txloader
 sky_image = txloader.load_sky_image()
 
 
+def multiply_with_color_depth(image, shading):
+    color = (255 / shading) / 255
+    if color >= 0.95:
+        return image
+
+    imgdata = pygame.surfarray.array3d(image)
+    return pygame.surfarray.make_surface(imgdata * color)
+
+
 def draw_solid_sky():
     pygame.draw.rect(_var_.win, _color_.backSky,
                      (_var_.SCREEN_START[0], -_var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
@@ -51,6 +60,14 @@ def get_wall_segment(ray, depth, angle):
     return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_PX, height])
 
 
+def get_screen_rect(ray, depth, angle):
+    rect = get_wall_segment(ray, depth, angle)
+
+    shift_x = _var_.SCREEN_START[0] + rect[0]
+    shift_y = _var_.SCREEN_START[1] - rect[1]
+    return np.array([shift_x, shift_y, rect[2], rect[3]])
+
+
 def draw_reflection(rect, shading):
     rect_reflected = np.array(rect)
     rect_reflected[1] = rect_reflected[1] + rect_reflected[3]
@@ -60,26 +77,9 @@ def draw_reflection(rect, shading):
     _var_.win.blit(shape_surf, rect_reflected)
 
 
-def get_screen_rect(ray, depth, angle):
-    rect = get_wall_segment(ray, depth, angle)
-
-    shift_x = _var_.SCREEN_START[0] + rect[0]
-    shift_y = _var_.SCREEN_START[1] - rect[1]
-    return np.array([shift_x, shift_y, rect[2], rect[3]])
-
-
 def draw_wall_solid_color(rect, shading):
     color = _color_.get_color_with_shading(_color_.wall_color, shading)
     pygame.draw.rect(_var_.win, color, rect)
-
-
-def multiply_with_color_depth(image, shading):
-    color = (255 / shading) / 255
-    if color >= 0.95:
-        return image
-
-    imgdata = pygame.surfarray.array3d(image)
-    return pygame.surfarray.make_surface(imgdata * color)
 
 
 def draw_wall_tx(rect, offset, shading):
