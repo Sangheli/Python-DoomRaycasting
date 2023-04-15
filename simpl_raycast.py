@@ -11,6 +11,12 @@ import simple_raycast.input as _input_
 pygame.init()
 clock = pygame.time.Clock()
 
+def print_fps():
+    fps = str(int(clock.get_fps()))
+    font = pygame.font.SysFont('Monospace Regular', 30)
+    textsurface = font.render(fps, False, (255, 255, 255))
+    _var_.win.blit(textsurface, (0, 0))
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -27,8 +33,5 @@ while True:
     _var_.player_angle, _var_.player_x, _var_.player_y, _var_.forward = _input_.input_scan(_var_.player_angle, fixed_x,
                                                                                            fixed_y, _var_.forward)
     clock.tick(60)
-    fps = str(int(clock.get_fps()))
-    font = pygame.font.SysFont('Monospace Regular', 30)
-    textsurface = font.render(fps, False, (255, 255, 255))
-    _var_.win.blit(textsurface, (0, 0))
+    print_fps()
     pygame.display.flip()
