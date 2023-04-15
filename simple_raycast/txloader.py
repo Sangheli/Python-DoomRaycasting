@@ -2,7 +2,7 @@ import pygame as pg
 import simple_raycast.variables as _var_
 
 TEXTURE_SIZE = 256
-COLUMN_SIZE_X = _var_.SCREEN_WIDTH // _var_.CASTED_RAYS
+COLUMN_SIZE_X = 480 // _var_.CASTED_RAYS
 
 
 def get_texture(path, res=(TEXTURE_SIZE, TEXTURE_SIZE)):
