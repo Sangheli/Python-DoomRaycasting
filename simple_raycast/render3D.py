@@ -25,14 +25,12 @@ def draw_solid_floor():
 
 
 def draw_3D_back(player_angle):
-    draw_sky_image(player_angle)
     draw_solid_floor()
-    # draw_solid_sky()
 
-
-def get_shading(color, depth):
-    return np.array(color) / (1 + depth * depth * 0.0001)
-
+    if _var_.DRAW_SKY:
+        draw_sky_image(player_angle)
+    else:
+        draw_solid_sky()
 
 def get_fixed_fisheye_depth(depth, angle):
     return depth * math.cos(_var_.player_angle - angle)
@@ -55,7 +53,7 @@ def draw_reflection(rect, depth):
     rect_reflected = np.array(rect)
     rect_reflected[1] = rect_reflected[1] + rect_reflected[3]
     shape_surf = pygame.Surface(pygame.Rect(rect_reflected).size, pygame.SRCALPHA)
-    pygame.draw.rect(shape_surf, get_shading(_color_.color_reflection, depth), shape_surf.get_rect())
+    pygame.draw.rect(shape_surf, _color_.get_shading(_color_.color_reflection, depth), shape_surf.get_rect())
     _var_.win.blit(shape_surf, rect_reflected)
 
 
@@ -66,7 +64,7 @@ def get_world_rect(rect):
 
 
 def draw_wall_solid_color(rect, depth):
-    color = get_shading(_color_.wall_color, depth)
+    color = _color_.get_shading(_color_.wall_color, depth)
     pygame.draw.rect(_var_.win, color, rect)
 
 
@@ -74,5 +72,10 @@ def draw_3D_wall_segment(ray, depth, angle):
     rect = get_wall_segment(ray, depth, angle)
     world_rect = get_world_rect(rect)
 
-    draw_wall_solid_color(world_rect, depth)
-    draw_reflection(world_rect, depth)
+    if _var_.DRAW_TEXTURE:
+        draw_wall_tx(world_rect, (rect[0] % 100) / 100)
+    else:
+        draw_wall_solid_color(world_rect, depth)
+
+    if _var_.DRAW_REFLECTION:
+        draw_reflection(world_rect, depth)

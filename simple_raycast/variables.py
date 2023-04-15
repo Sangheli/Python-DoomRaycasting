@@ -31,6 +31,11 @@ FOV = math.pi / 3
 HALF_FOV = FOV / 2
 STEP_ANGLE = FOV / CASTED_RAYS
 
+# Game params
+DRAW_REFLECTION = True
+DRAW_TEXTURE = False
+DRAW_SKY = True
+
 # Game
 win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1), SCREEN_HEIGHT))
 pygame.display.set_caption("Raycasting by Network Skeleton")
