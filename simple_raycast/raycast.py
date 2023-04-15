@@ -6,10 +6,16 @@ import simple_raycast.map as map
 import pygame
 
 def print_raycount(count):
-    fps = 'rays: '+str(count)
+    text = 'rays: '+str(count)
     font = pygame.font.SysFont('Monospace Regular', 30)
-    textsurface = font.render(fps, False, (255, 255, 255))
-    _var_.win.blit(textsurface, (40, 0))
+    textsurface = font.render(text, False, (255, 255, 255))
+    _var_.win.blit(textsurface, (80, 0))
+
+def print_pos(x,y):
+    text = '('+str(int(x))+','+str(int(y))+')'
+    font = pygame.font.SysFont('Monospace Regular', 30)
+    textsurface = font.render(text, False, (255, 255, 255))
+    _var_.win.blit(textsurface, (30, 0))
 
 # Получаем проекции треугольника(x,y), исходя из угла и длины гипотенузы(angle,depth)
 def get_ray_projection(player_x, player_y, _sin,_cos, depth):
