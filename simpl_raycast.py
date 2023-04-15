@@ -10,6 +10,7 @@ import simple_raycast.input as _input_
 
 pygame.init()
 clock = pygame.time.Clock()
+DELTATIMEMS = 0
 
 def print_fps():
     fps = str(int(clock.get_fps()))
@@ -23,7 +24,8 @@ while True:
             pygame.quit()
             sys.exit(0)
 
-    fixed_x, fixed_y = _collision_.check_collision(_var_.player_x, _var_.player_y, _var_.player_angle, _var_.forward)
+    DELTATIME = DELTATIMEMS/1000
+    fixed_x, fixed_y = _collision_.check_collision(_var_.player_x, _var_.player_y, _var_.player_angle, _var_.forward,DELTATIME)
 
     render3D.draw_3D_back(_var_.player_angle)
     render2D.draw_2D_map(fixed_x, fixed_y, _var_.player_angle)
@@ -31,7 +33,9 @@ while True:
     _raycast_.cast_rays(fixed_x, fixed_y)
 
     _var_.player_angle, _var_.player_x, _var_.player_y, _var_.forward = _input_.input_scan(_var_.player_angle, fixed_x,
-                                                                                           fixed_y, _var_.forward)
+                                                                                           fixed_y, _var_.forward,
+                                                                                           DELTATIME)
     clock.tick(600)
+    DELTATIMEMS = clock.get_time()
     print_fps()
     pygame.display.flip()

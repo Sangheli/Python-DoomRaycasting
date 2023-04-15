@@ -24,6 +24,9 @@ WALL_HEIGHT_BASE = 21000 * SCREEN_HEIGHT / 480
 forward = True
 player_x, player_y, player_angle = 4 * TILE_SIZE, 4 * TILE_SIZE, -math.pi/2
 
+PLAYER_SPEED = 200
+PLAYER_ROT_SPEED = 5
+
 FOV = math.pi / 3
 HALF_FOV = FOV / 2
 STEP_ANGLE = FOV / CASTED_RAYS
