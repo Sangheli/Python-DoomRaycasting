@@ -81,3 +81,5 @@ def cast_subrays(player_x, player_y, _sin, _cos, ray_index, angle, start):
             render2D.draw_2D_rays(col, row, ray_x, ray_y, player_x, player_y)
             render3D.draw_3D_wall_segment(ray_index, depth, angle)
             return subCount
+
+    return 0
