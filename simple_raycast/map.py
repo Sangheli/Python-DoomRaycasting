@@ -28,8 +28,10 @@ def get_coordinates_float(pos_x, pos_y):
     return col, row
 
 def is_wall(col, row):
+    col = int(col)
+    row = int(row)
     index = row * _var_.MAP_SIZE + col
-    if index > MAX_INDEX - 1:
+    if index > MAX_INDEX - 1 or index < 0:
         return False
     else:
         return MAP[index] == wallID

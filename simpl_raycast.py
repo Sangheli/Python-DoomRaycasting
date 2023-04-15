@@ -32,6 +32,6 @@ while True:
 
     _var_.player_angle, _var_.player_x, _var_.player_y, _var_.forward = _input_.input_scan(_var_.player_angle, fixed_x,
                                                                                            fixed_y, _var_.forward)
-    clock.tick(60)
+    clock.tick(600)
     print_fps()
     pygame.display.flip()
