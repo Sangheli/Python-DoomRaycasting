@@ -10,4 +10,11 @@ def get_texture(path, res=(TEXTURE_SIZE, TEXTURE_SIZE)):
 
 
 def load_sky_image():
-    return get_texture('resources/textures/sky.png', (_var_.SCREEN_WIDTH, _var_.SCREEN_WIDTH//2))
+    return get_texture('resources/textures/sky.png', (_var_.SCREEN_WIDTH, _var_.SCREEN_WIDTH // 2))
+
+
+def load_wall_textures():
+    return get_texture('resources/textures/2.png')
+
+
+wall_tx = load_wall_textures()
