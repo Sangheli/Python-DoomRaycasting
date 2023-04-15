@@ -78,9 +78,11 @@ def cast_rays(player_x, player_y):
         x = x1 if isVert else x2
         y = y1 if isVert else y2
         depth = depth_v if isVert else depth_h
+        offset = y1 if isVert else x2
+        offset = int(offset)%_var_.TILE_SIZE
 
         render2D.draw_ray(player_x, player_y, x, y)
-        render3D.draw_3D_wall_segment(ray_index, depth, angle)
+        render3D.draw_3D_wall_segment(ray_index, depth, angle,offset)
         count += subCount1 + subCount2
 
     print_raycount(count)

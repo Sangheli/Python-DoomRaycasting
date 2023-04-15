@@ -68,12 +68,18 @@ def draw_wall_solid_color(rect, depth):
     pygame.draw.rect(_var_.win, color, rect)
 
 
-def draw_3D_wall_segment(ray, depth, angle):
+def draw_wall_tx(rect, offset):
+    wall_column = txloader.extract_texture_part(offset)
+    wall_column = pygame.transform.scale(wall_column, (rect[2], rect[3]))
+    _var_.win.blit(wall_column, (rect[0], rect[1]))
+
+
+def draw_3D_wall_segment(ray, depth, angle, offset):
     rect = get_wall_segment(ray, depth, angle)
     world_rect = get_world_rect(rect)
 
     if _var_.DRAW_TEXTURE:
-        draw_wall_tx(world_rect, (rect[0] % 100) / 100)
+        draw_wall_tx(world_rect, offset)
     else:
         draw_wall_solid_color(world_rect, depth)
 
