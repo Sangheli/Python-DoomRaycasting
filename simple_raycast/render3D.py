@@ -32,6 +32,7 @@ def draw_3D_back(player_angle):
     else:
         draw_solid_sky()
 
+
 def get_fixed_fisheye_depth(depth, angle):
     return depth * math.cos(_var_.player_angle - angle)
 
@@ -39,7 +40,8 @@ def get_fixed_fisheye_depth(depth, angle):
 def get_wall_sector_height(depth, angle):
     depth = get_fixed_fisheye_depth(depth, angle)
     depth = max(depth, 0.0001)  # защита от zero div
-    return min(int(_var_.WALL_HEIGHT_PROJ_COEF / depth), _var_.SCREEN_HEIGHT)  # защита от гигантского значения высоты стены
+    return min(int(_var_.WALL_HEIGHT_PROJ_COEF / depth),
+               _var_.SCREEN_HEIGHT)  # защита от гигантского значения высоты стены
 
 
 def get_wall_segment(ray, depth, angle):
@@ -49,39 +51,52 @@ def get_wall_segment(ray, depth, angle):
     return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_PX, height])
 
 
-def draw_reflection(rect, depth):
+def draw_reflection(rect, shading):
     rect_reflected = np.array(rect)
     rect_reflected[1] = rect_reflected[1] + rect_reflected[3]
     shape_surf = pygame.Surface(pygame.Rect(rect_reflected).size, pygame.SRCALPHA)
-    pygame.draw.rect(shape_surf, _color_.get_shading(_color_.color_reflection, depth), shape_surf.get_rect())
+    pygame.draw.rect(shape_surf, _color_.get_color_with_shading(_color_.color_reflection, shading),
+                     shape_surf.get_rect())
     _var_.win.blit(shape_surf, rect_reflected)
 
 
-def get_world_rect(rect):
+def get_screen_rect(ray, depth, angle):
+    rect = get_wall_segment(ray, depth, angle)
+
     shift_x = _var_.SCREEN_START[0] + rect[0]
     shift_y = _var_.SCREEN_START[1] - rect[1]
     return np.array([shift_x, shift_y, rect[2], rect[3]])
 
 
-def draw_wall_solid_color(rect, depth):
-    color = _color_.get_shading(_color_.wall_color, depth)
+def draw_wall_solid_color(rect, shading):
+    color = _color_.get_color_with_shading(_color_.wall_color, shading)
     pygame.draw.rect(_var_.win, color, rect)
 
 
-def draw_wall_tx(rect, offset):
+def multiply_with_color_depth(image, shading):
+    color = (255 / shading) / 255
+    if color >= 0.95:
+        return image
+
+    imgdata = pygame.surfarray.array3d(image)
+    return pygame.surfarray.make_surface(imgdata * color)
+
+
+def draw_wall_tx(rect, offset, shading):
     wall_column = txloader.extract_texture_part(offset)
     wall_column = pygame.transform.scale(wall_column, (rect[2], rect[3]))
+    wall_column = wall_column if not _var_.SHADE_TEXTURE else multiply_with_color_depth(wall_column, shading)
     _var_.win.blit(wall_column, (rect[0], rect[1]))
 
 
 def draw_3D_wall_segment(ray, depth, angle, offset):
-    rect = get_wall_segment(ray, depth, angle)
-    world_rect = get_world_rect(rect)
+    screen_rect = get_screen_rect(ray, depth, angle)
+    shading = _color_.get_shading(depth)
 
     if _var_.DRAW_TEXTURE:
-        draw_wall_tx(world_rect, offset)
+        draw_wall_tx(screen_rect, offset, shading)
     else:
-        draw_wall_solid_color(world_rect, depth)
+        draw_wall_solid_color(screen_rect, shading)
 
     if _var_.DRAW_REFLECTION:
-        draw_reflection(world_rect, depth)
+        draw_reflection(screen_rect, shading)

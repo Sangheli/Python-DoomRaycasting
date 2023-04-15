@@ -14,5 +14,13 @@ backSky = (137, 207, 240)
 color_reflection = (0, 0, 0, 122)
 
 
-def get_shading(color, depth):
-    return np.array(color) / (1 + depth * depth * 0.00001)
+def update_color_shading(color, depth):
+    return np.array(color) / get_shading(depth)
+
+
+def get_color_with_shading(color, shading):
+    return np.array(color) / shading
+
+
+def get_shading(depth):
+    return 1 + depth * depth * 0.00001

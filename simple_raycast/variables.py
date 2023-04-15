@@ -34,6 +34,7 @@ STEP_ANGLE = FOV / CASTED_RAYS
 # Game params
 DRAW_REFLECTION = True
 DRAW_TEXTURE = True
+SHADE_TEXTURE = False
 DRAW_SKY = True
 
 # Game
