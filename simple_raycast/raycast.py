@@ -72,6 +72,7 @@ def cast_rays_new(player_x, player_y):
 
 def cast_subrays(player_x, player_y, _sin, _cos, ray_index, angle, start):
     subCount = 0
+    if start < 0: start = 0
     for depth in range(start, _var_.MAX_DEPTH,1):
         subCount+=1
         ray_x, ray_y = get_ray_projection(player_x, player_y, _sin, _cos, depth)
