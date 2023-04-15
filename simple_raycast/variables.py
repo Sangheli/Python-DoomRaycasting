@@ -22,7 +22,7 @@ WALL_HEIGHT_PROJ_COEF = 21000 * SCREEN_HEIGHT / 480
 
 # Player setup
 forward = True
-player_x, player_y, player_angle = 4 * TILE_SIZE, 4 * TILE_SIZE, -math.pi/2
+player_x, player_y, player_angle = 1.5 * TILE_SIZE, 6.5 * TILE_SIZE,0
 
 PLAYER_SPEED = 200
 PLAYER_ROT_SPEED = 5
