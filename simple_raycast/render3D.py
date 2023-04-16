@@ -81,6 +81,17 @@ def draw_wall_solid_color(rect, shading):
     color = _color_.get_color_with_shading(_color_.wall_color, shading)
     pygame.draw.rect(_var_.win, color, rect)
 
+def draw_floor_ao(rect,shading):
+    rect_small = np.array(rect)
+    rect_small[1] =  rect_small[1] + rect_small[3]
+    rect_small[3] = (_var_.SCREEN_HEIGHT/96)/shading;
+    rect_small[1] =  rect_small[1] - rect_small[3]/2
+
+    shape_surf = pygame.Surface(pygame.Rect(rect_small).size, pygame.SRCALPHA)
+    pygame.draw.rect(shape_surf, _color_.get_color_with_shading(_color_.blackA, shading),
+                     shape_surf.get_rect())
+    _var_.win.blit(shape_surf, rect_small)
+
 
 def draw_wall_tx(rect, offset, shading):
     wall_column = txloader.extract_texture_part(offset)
@@ -100,3 +111,6 @@ def draw_3D_wall_segment(ray, depth, angle, offset):
 
     if _var_.DRAW_REFLECTION:
         draw_reflection(screen_rect, shading)
+
+    if _var_.DRAW_AO:
+        draw_floor_ao(screen_rect,shading)
