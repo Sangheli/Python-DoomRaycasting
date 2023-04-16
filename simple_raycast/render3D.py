@@ -81,11 +81,12 @@ def draw_wall_solid_color(rect, shading):
     color = _color_.get_color_with_shading(_color_.wall_color, shading)
     pygame.draw.rect(_var_.win, color, rect)
 
-def draw_floor_ao(rect,shading):
+
+def draw_floor_ao(rect, shading):
     rect_small = np.array(rect)
-    rect_small[1] =  rect_small[1] + rect_small[3]
-    rect_small[3] = (_var_.SCREEN_HEIGHT/96)/shading;
-    rect_small[1] =  rect_small[1] - rect_small[3]/2
+    rect_small[1] = rect_small[1] + rect_small[3]
+    rect_small[3] = (_var_.SCREEN_HEIGHT / 96) / shading;
+    rect_small[1] = rect_small[1] - rect_small[3] / 2
 
     shape_surf = pygame.Surface(pygame.Rect(rect_small).size, pygame.SRCALPHA)
     pygame.draw.rect(shape_surf, _color_.get_color_with_shading(_color_.blackA, shading),
@@ -100,19 +101,19 @@ def draw_wall_ao(rect, shading):
     _var_.win.blit(shape_surf, rect)
 
 
-def draw_wall_tx(rect, offset, shading):
-    wall_column = txloader.extract_texture_part(offset)
+def draw_wall_tx(rect, wallId, offset, shading):
+    wall_column = txloader.extract_texture_part(wallId, offset)
     wall_column = pygame.transform.scale(wall_column, (rect[2], rect[3]))
     wall_column = wall_column if not _var_.SHADE_TEXTURE else multiply_with_color_depth(wall_column, shading)
     _var_.win.blit(wall_column, (rect[0], rect[1]))
 
 
-def draw_3D_wall_segment(ray, depth, angle, offset, is_ao):
+def draw_3D_wall_segment(ray, depth, angle, wallId, offset, is_ao):
     screen_rect = get_screen_rect(ray, depth, angle)
     shading = _color_.get_shading(depth)
 
     if _var_.DRAW_TEXTURE:
-        draw_wall_tx(screen_rect, offset, shading)
+        draw_wall_tx(screen_rect, wallId, offset, shading)
     else:
         draw_wall_solid_color(screen_rect, shading)
 
@@ -123,4 +124,4 @@ def draw_3D_wall_segment(ray, depth, angle, offset, is_ao):
         if shading > 1.5: return
         # draw_floor_ao(screen_rect, shading)
         if is_ao:
-            draw_wall_ao(screen_rect,shading)
+            draw_wall_ao(screen_rect, shading)

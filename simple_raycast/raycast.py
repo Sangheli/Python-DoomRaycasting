@@ -38,11 +38,12 @@ def get_data_vert(ox, oy, xm, ym, sin_a, cos_a, WIDTH):
         subCount += 1
         depth_v = (x - ox) / cos_a
         y = oy + depth_v * sin_a
-        col, row = map.get_coordinates(x + dx, y)
-        if map.is_wall(col, row): break
+        tile = map.get_coordinates(x + dx, y)
+        is_wall = map.is_wall(tile)
+        if is_wall: return x, y, depth_v, subCount, map.world_map[tile]
         x += dx * _var_.TILE_SIZE
 
-    return x, y, depth_v, subCount
+    return x, y, depth_v, subCount, ''
 
 
 def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT):
@@ -53,11 +54,12 @@ def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT):
         subCount += 1
         depth_h = (y - oy) / sin_a
         x = ox + depth_h * cos_a
-        col, row = map.get_coordinates(x, y + dy)
-        if map.is_wall(col, row): break
+        tile = map.get_coordinates(x, y + dy)
+        is_wall = map.is_wall(tile)
+        if is_wall: return x, y, depth_h, subCount, map.world_map[tile]
         y += dy * _var_.TILE_SIZE
 
-    return x, y, depth_h, subCount
+    return x, y, depth_h, subCount, ''
 
 
 def cast_rays(player_x, player_y):
@@ -71,19 +73,20 @@ def cast_rays(player_x, player_y):
         angle = start_angle + ray_index * _var_.STEP_ANGLE
         sin_a, cos_a = get_sin_cos(angle)
 
-        x1, y1, depth_v, subCount1 = get_data_vert(player_x, player_y, xm, ym, sin_a, cos_a, WIDTH)
-        x2, y2, depth_h, subCount2 = get_data_hori(player_x, player_y, xm, ym, sin_a, cos_a, HEIGHT)
+        x1, y1, depth_v, subCount1, tx1 = get_data_vert(player_x, player_y, xm, ym, sin_a, cos_a, WIDTH)
+        x2, y2, depth_h, subCount2, tx2 = get_data_hori(player_x, player_y, xm, ym, sin_a, cos_a, HEIGHT)
         isVert = depth_v < depth_h
 
         x = x1 if isVert else x2
         y = y1 if isVert else y2
+        wallId = tx1 if isVert else tx2
         depth = depth_v if isVert else depth_h
         offset = y1 if isVert else x2
-        offset = int(offset)%_var_.TILE_SIZE
+        offset = int(offset) % _var_.TILE_SIZE
         if ray_index == 0: prev_vert = isVert
 
         render2D.draw_ray(player_x, player_y, x, y)
-        render3D.draw_3D_wall_segment(ray_index, depth, angle,offset,prev_vert != isVert)
+        render3D.draw_3D_wall_segment(ray_index, depth, angle, wallId, offset, prev_vert != isVert)
         prev_vert = isVert
         count += subCount1 + subCount2
 
