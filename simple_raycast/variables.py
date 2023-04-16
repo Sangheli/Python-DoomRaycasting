@@ -40,4 +40,4 @@ DRAW_AO = True
 
 # Game
 win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1), SCREEN_HEIGHT))
-pygame.display.set_caption("Raycasting by Network Skeleton")
+pygame.display.set_caption("Raycasting by Sangheli")
