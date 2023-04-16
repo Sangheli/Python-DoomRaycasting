@@ -66,7 +66,7 @@ def cast_rays(player_x, player_y):
     HEIGHT = _var_.MAP_SIZE * _var_.TILE_SIZE
     xm, ym = mapping(player_x, player_y)
     start_angle = _var_.player_angle - _var_.HALF_FOV
-
+    prev_vert = False
     for ray_index in range(_var_.CASTED_RAYS):
         angle = start_angle + ray_index * _var_.STEP_ANGLE
         sin_a, cos_a = get_sin_cos(angle)
@@ -80,9 +80,11 @@ def cast_rays(player_x, player_y):
         depth = depth_v if isVert else depth_h
         offset = y1 if isVert else x2
         offset = int(offset)%_var_.TILE_SIZE
+        if ray_index == 0: prev_vert = isVert
 
         render2D.draw_ray(player_x, player_y, x, y)
-        render3D.draw_3D_wall_segment(ray_index, depth, angle,offset)
+        render3D.draw_3D_wall_segment(ray_index, depth, angle,offset,prev_vert != isVert)
+        prev_vert = isVert
         count += subCount1 + subCount2
 
     print_raycount(count)

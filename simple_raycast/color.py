@@ -6,7 +6,7 @@ red = (255, 0, 0)
 green = (0, 255, 0)
 yellow = (255, 255, 0)
 black = (0, 0, 0)
-blackA = (0, 0, 0,122)
+blackA = (0, 0, 0,60)
 wall_color = (175, 75, 0)
 
 backGround = (145, 163, 176)
