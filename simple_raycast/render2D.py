@@ -6,7 +6,8 @@ import math
 
 
 def draw_2D_cell(col, row):
-    cur_color = _color_.cell1 if map.is_wall(col,row) else _color_.cell2
+    tile = (col,row)
+    cur_color = _color_.cell1 if map.is_wall(tile) else _color_.cell2
     pygame.draw.rect(_var_.win, cur_color,
                      (col * _var_.TILE_SIZE_2D, row * _var_.TILE_SIZE_2D, _var_.TILE_SIZE_2D - 2, _var_.TILE_SIZE_2D - 2))
 

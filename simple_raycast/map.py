@@ -29,5 +29,5 @@ def get_coordinates(pos_x, pos_y):
     return col, row
 
 
-def is_wall(col, row):
-    return (col, row) in world_map
+def is_wall(tile):
+    return tile in world_map
