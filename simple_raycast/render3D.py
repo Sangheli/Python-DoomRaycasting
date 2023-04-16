@@ -53,6 +53,14 @@ def get_wall_sector_height(depth, angle):
                _var_.SCREEN_HEIGHT)  # защита от гигантского значения высоты стены
 
 
+def update_wall_to_height(rect, wallId):
+    if wallId == '2':
+        rect[3] *= 2
+        rect[1] = rect[3] * 3 / 4
+
+    return rect
+
+
 def get_wall_segment(ray, depth, angle):
     height = get_wall_sector_height(depth, angle)
     screen_pos_x = ray * _var_.WALL_SECTOR_PX;
@@ -60,8 +68,9 @@ def get_wall_segment(ray, depth, angle):
     return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_PX, height])
 
 
-def get_screen_rect(ray, depth, angle):
+def get_screen_rect(ray, depth, angle, wallId):
     rect = get_wall_segment(ray, depth, angle)
+    rect = update_wall_to_height(rect, wallId)
 
     shift_x = _var_.SCREEN_START[0] + rect[0]
     shift_y = _var_.SCREEN_START[1] - rect[1]
@@ -109,7 +118,7 @@ def draw_wall_tx(rect, wallId, offset, shading):
 
 
 def draw_3D_wall_segment(ray, depth, angle, wallId, offset, is_ao):
-    screen_rect = get_screen_rect(ray, depth, angle)
+    screen_rect = get_screen_rect(ray, depth, angle, wallId)
     shading = _color_.get_shading(depth)
 
     if _var_.DRAW_TEXTURE:
