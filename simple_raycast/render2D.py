@@ -53,4 +53,5 @@ def draw_ray(new_surf,ox, oy, px, py):
                      (int(px * _var_.TILE_MULT), int(py * _var_.TILE_MULT)))
 
 def finish(new_surf):
+    if not _var_.draw2D: return
     _var_.win.blit(new_surf, rect_back)
