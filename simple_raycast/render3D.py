@@ -70,7 +70,7 @@ def get_wall_segment(ray, depth, angle):
 
 def get_screen_rect(ray, depth, angle, wallId):
     rect = get_wall_segment(ray, depth, angle)
-    rect = update_wall_to_height(rect, wallId)
+    # rect = update_wall_to_height(rect, wallId)
 
     shift_x = _var_.SCREEN_START[0] + rect[0]
     shift_y = _var_.SCREEN_START[1] - rect[1]
