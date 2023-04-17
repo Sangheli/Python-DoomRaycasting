@@ -35,11 +35,11 @@ def draw_2D_player_base_rays(surf,ox, oy, angle):
         oy + math.sin(angle + _var_.HALF_FOV) * 50), 3)
 
 
-def draw_2D_map(player_x, player_y, player_angle):
+def get_surf():
+    return pygame.Surface.copy(back_surf) if _var_.draw2D else back_surf
+
+def draw_2D_map(new_surf, player_x, player_y, player_angle):
     if not _var_.draw2D: return
-
-    new_surf = pygame.Surface.copy(back_surf)
-
     # player dot
     pygame.draw.circle(new_surf, _color_.red, (int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT)), 8)
     draw_2D_player_base_rays(new_surf,int(player_x*_var_.TILE_MULT), int(player_y*_var_.TILE_MULT), player_angle)

@@ -29,7 +29,8 @@ while True:
     fixed_x, fixed_y = _collision_.check_collision(_var_.player_x, _var_.player_y, _var_.player_angle, _var_.forward,DELTATIME)
 
     render3D.draw_3D_back(_var_.player_angle)
-    surf2D = render2D.draw_2D_map(fixed_x, fixed_y, _var_.player_angle)
+    surf2D = render2D.get_surf()
+    render2D.draw_2D_map(surf2D ,fixed_x, fixed_y, _var_.player_angle)
     
     _raycast_.cast_rays(fixed_x, fixed_y,surf2D)
 

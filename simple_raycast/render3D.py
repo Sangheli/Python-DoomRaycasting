@@ -61,21 +61,20 @@ def update_wall_to_height(rect, wallId):
 
     return rect
 
-@njit(fastmath=True, cache=True)
+@njit(fastmath=True)
 def get_wall_segment(ray, depth,player_angle, angle):
     height = get_wall_sector_height(depth,player_angle, angle)
     screen_pos_x = ray * _var_.WALL_SECTOR_PX;
     screen_pos_Y = height / 2;
     return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_PX, height])
 
-@njit(fastmath=True, cache=True)
+@njit(fastmath=True,)
 def get_screen_rect(ray, depth, player_angle, angle, wallId):
     rect = get_wall_segment(ray, depth,player_angle, angle)
     # rect = update_wall_to_height(rect, wallId)
 
-    shift_x = _var_.SCREEN_START[0] + rect[0]
-    shift_y = _var_.SCREEN_START[1] - rect[1]
-    return np.array([shift_x, shift_y, rect[2], rect[3]])
+    shift = _var_.SCREEN_START + np.array([rect[0],-rect[1]])
+    return np.array([shift[0], shift[1], rect[2], rect[3]])
 
 
 def draw_reflection(rect, shading):
@@ -119,7 +118,8 @@ def draw_wall_tx(rect, wallId, offset, shading, proj_height):
     wall_column = wall_column if not _var_.SHADE_TEXTURE else multiply_with_color_depth(wall_column, shading)
 
     wall_pos_y = _var_.HALF_HEIGHT - proj_height // 2 if isTiny else 0
-    _var_.win.blit(wall_column, (rect[0], wall_pos_y))
+    wall_pos = (rect[0], wall_pos_y)
+    _var_.win.blit(wall_column, wall_pos)
 
 
 def draw_3D_wall_segment(ray, depth, angle, wallId, offset, is_ao):
