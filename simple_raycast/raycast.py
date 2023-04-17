@@ -75,13 +75,15 @@ def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT, world_map):
     return x, y, depth_h, subCount, 0
 
 
-def cast_rays(player_x, player_y):
+def cast_rays(player_x, player_y,surf2D):
     casted_walls, count = ray_casting(player_x, player_y,_var_.player_angle, map.world_map)
     print_raycount(count)
 
     for ray_index, depth, angle, wallId, offset, x, y, isAo in casted_walls:
-        render2D.draw_ray(player_x, player_y, x, y)
+        render2D.draw_ray(surf2D,player_x, player_y, x, y)
         render3D.draw_3D_wall_segment(ray_index, depth, angle, wallId, offset, False)
+
+    render2D.finish(surf2D)
 
 
 @njit(fastmath=True)
