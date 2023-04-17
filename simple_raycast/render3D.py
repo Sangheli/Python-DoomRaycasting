@@ -110,19 +110,24 @@ def draw_wall_ao(rect, shading):
     _var_.win.blit(shape_surf, rect)
 
 
-def draw_wall_tx(rect, wallId, offset, shading):
-    wall_column = txloader.extract_texture_part(wallId, offset)
-    wall_column = pygame.transform.scale(wall_column, (rect[2], rect[3]))
+def draw_wall_tx(rect, wallId, offset, shading, proj_height):
+    isTiny = proj_height < _var_.SCREEN_HEIGHT
+
+    wall_column = txloader.extract_texture_part(wallId, offset,proj_height)
+    wall_column = pygame.transform.scale(wall_column, (rect[2], proj_height if isTiny else _var_.SCREEN_HEIGHT))
     wall_column = wall_column if not _var_.SHADE_TEXTURE else multiply_with_color_depth(wall_column, shading)
-    _var_.win.blit(wall_column, (rect[0], rect[1]))
+
+    wall_pos_y = _var_.HALF_HEIGHT - proj_height // 2 if isTiny else 0
+    _var_.win.blit(wall_column, (rect[0], wall_pos_y))
 
 
 def draw_3D_wall_segment(ray, depth, angle, wallId, offset, is_ao):
     screen_rect = get_screen_rect(ray, depth, angle, wallId)
     shading = _color_.get_shading(depth)
+    proj_height = _var_.SCREEN_DIST / (get_fixed_fisheye_depth(depth/_var_.TILE_SIZE, angle) + 0.0001)
 
     if _var_.DRAW_TEXTURE:
-        draw_wall_tx(screen_rect, wallId, offset, shading)
+        draw_wall_tx(screen_rect, wallId, offset, shading, proj_height)
     else:
         draw_wall_solid_color(screen_rect, shading)
 

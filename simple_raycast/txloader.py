@@ -2,8 +2,8 @@ import pygame as pg
 import simple_raycast.variables as _var_
 
 TEXTURE_SIZE = 256
-COLUMN_SIZE_X = 480 // _var_.CASTED_RAYS
-
+COLUMN_SIZE_X = _var_.SCREEN_WIDTH // _var_.CASTED_RAYS
+HALF_TX_SIZE = TEXTURE_SIZE // 2
 
 def get_texture(path, res=(TEXTURE_SIZE, TEXTURE_SIZE)):
     texture = pg.image.load(path).convert_alpha()
@@ -27,10 +27,14 @@ def load_wall_textures():
 wall_tx = load_wall_textures()
 
 
-def extract_texture_part(wallId, offset):
-    return wall_tx[wallId].subsurface(
-        offset * COLUMN_SIZE_X,
-        0,
-        COLUMN_SIZE_X,
-        TEXTURE_SIZE
-    )
+def extract_texture_part(wallId, offset,proj_height):
+    if proj_height < _var_.SCREEN_HEIGHT:
+        return wall_tx[wallId].subsurface(
+            offset * (TEXTURE_SIZE - COLUMN_SIZE_X), 0, COLUMN_SIZE_X, TEXTURE_SIZE
+        )
+    else:
+        height = TEXTURE_SIZE * _var_.SCREEN_HEIGHT / proj_height
+        return wall_tx[wallId].subsurface(
+            offset * (TEXTURE_SIZE - COLUMN_SIZE_X), HALF_TX_SIZE - height // 2, COLUMN_SIZE_X, height
+        )
+

@@ -78,8 +78,10 @@ def cast_rays(player_x, player_y):
         isVert = depth_v < depth_h
 
         x,y,depth,wallId = (x1,y1,depth_v,tx1) if isVert else (x2,y2,depth_h,tx2)
-        offset = y1 if isVert else x2
-        offset = int(offset) % _var_.TILE_SIZE
+        if wallId == 0: continue
+        offset = (y1 if isVert else x2) / _var_.TILE_SIZE % 1
+        if isVert: offset = offset if cos_a > 0 else (1 - offset)
+        else: offset = (1 - offset) if sin_a > 0 else offset
         if ray_index == 0: prev_vert = isVert
 
         render2D.draw_ray(player_x, player_y, x, y)
