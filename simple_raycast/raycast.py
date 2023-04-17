@@ -25,23 +25,23 @@ def print_pos(x, y):
     _var_.win.blit(textsurface, (30, 0))
 
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def mapping(a, b):
     return (a // _var_.TILE_SIZE) * _var_.TILE_SIZE, (b // _var_.TILE_SIZE) * _var_.TILE_SIZE
 
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def map_get_coordinates(a, b):
     return a // _var_.TILE_SIZE, b // _var_.TILE_SIZE
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def get_sin_cos(angle):
     sin_a = math.sin(angle)
     cos_a = math.cos(angle)
     return sin_a if sin_a else 0.000001, cos_a if cos_a else 0.000001
 
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def get_data_vert(ox, oy, xm, ym, sin_a, cos_a, WIDTH, world_map):
     subCount = 0
     x, dx = (xm + _var_.TILE_SIZE, 1) if cos_a >= 0 else (xm, -1)
@@ -58,7 +58,7 @@ def get_data_vert(ox, oy, xm, ym, sin_a, cos_a, WIDTH, world_map):
     return x, y, depth_v, subCount, 0
 
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT, world_map):
     subCount = 0
     y, dy = (ym + _var_.TILE_SIZE, 1) if sin_a >= 0 else (ym, -1)
