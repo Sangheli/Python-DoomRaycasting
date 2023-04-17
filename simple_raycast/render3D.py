@@ -4,6 +4,7 @@ import simple_raycast.variables as _var_
 import simple_raycast.color as _color_
 import numpy as np
 import simple_raycast.txloader as txloader
+from numba import njit
 
 sky_image = txloader.load_sky_image()
 
@@ -41,13 +42,13 @@ def draw_3D_back(player_angle):
     else:
         draw_solid_sky()
 
+@njit(fastmath=True, cache=True)
+def get_fixed_fisheye_depth(depth, player_angle, angle):
+    return depth * math.cos(player_angle - angle)
 
-def get_fixed_fisheye_depth(depth, angle):
-    return depth * math.cos(_var_.player_angle - angle)
-
-
-def get_wall_sector_height(depth, angle):
-    depth = get_fixed_fisheye_depth(depth, angle)
+@njit(fastmath=True, cache=True)
+def get_wall_sector_height(depth, player_angle,angle):
+    depth = get_fixed_fisheye_depth(depth, player_angle, angle)
     depth = max(depth, 0.0001)  # защита от zero div
     return min(int(_var_.WALL_HEIGHT_PROJ_COEF / depth),
                _var_.SCREEN_HEIGHT)  # защита от гигантского значения высоты стены
@@ -60,16 +61,16 @@ def update_wall_to_height(rect, wallId):
 
     return rect
 
-
-def get_wall_segment(ray, depth, angle):
-    height = get_wall_sector_height(depth, angle)
+@njit(fastmath=True, cache=True)
+def get_wall_segment(ray, depth,player_angle, angle):
+    height = get_wall_sector_height(depth,player_angle, angle)
     screen_pos_x = ray * _var_.WALL_SECTOR_PX;
     screen_pos_Y = height / 2;
     return np.array([screen_pos_x, screen_pos_Y, _var_.WALL_SECTOR_PX, height])
 
-
-def get_screen_rect(ray, depth, angle, wallId):
-    rect = get_wall_segment(ray, depth, angle)
+@njit(fastmath=True, cache=True)
+def get_screen_rect(ray, depth, player_angle, angle, wallId):
+    rect = get_wall_segment(ray, depth,player_angle, angle)
     # rect = update_wall_to_height(rect, wallId)
 
     shift_x = _var_.SCREEN_START[0] + rect[0]
@@ -122,9 +123,9 @@ def draw_wall_tx(rect, wallId, offset, shading, proj_height):
 
 
 def draw_3D_wall_segment(ray, depth, angle, wallId, offset, is_ao):
-    screen_rect = get_screen_rect(ray, depth, angle, wallId)
+    screen_rect = get_screen_rect(ray, depth,_var_.player_angle, angle, wallId)
     shading = _color_.get_shading(depth)
-    proj_height = _var_.SCREEN_DIST / (get_fixed_fisheye_depth(depth/_var_.TILE_SIZE, angle) + 0.0001)
+    proj_height = _var_.SCREEN_DIST / (get_fixed_fisheye_depth(depth/_var_.TILE_SIZE,_var_.player_angle, angle) + 0.0001)
 
     if _var_.DRAW_TEXTURE:
         draw_wall_tx(screen_rect, wallId, offset, shading, proj_height)
