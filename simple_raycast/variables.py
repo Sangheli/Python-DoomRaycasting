@@ -40,6 +40,7 @@ DRAW_TEXTURE = True
 SHADE_TEXTURE = True
 DRAW_SKY = True
 DRAW_AO = True
+DRAW_FLOOR_TX = True
 
 # Game
 win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1), SCREEN_HEIGHT))

@@ -11,18 +11,19 @@ import pygame
 WIDTH = _var_.MAP_SIZE * _var_.TILE_SIZE
 HEIGHT = _var_.MAP_SIZE * _var_.TILE_SIZE
 
-def print_raycount(count):
+
+def print_raycount(frame, count):
     text = 'rays: ' + str(count)
     font = pygame.font.SysFont('Monospace Regular', 30)
     textsurface = font.render(text, False, (255, 255, 255))
-    _var_.win.blit(textsurface, (120, 0))
+    frame.blit(textsurface, (120, 0))
 
 
-def print_pos(x, y):
+def print_pos(frame, x, y):
     text = '(' + str(int(x)) + ',' + str(int(y)) + ')'
     font = pygame.font.SysFont('Monospace Regular', 30)
     textsurface = font.render(text, False, (255, 255, 255))
-    _var_.win.blit(textsurface, (30, 0))
+    frame.blit(textsurface, (30, 0))
 
 
 @njit(fastmath=True)
@@ -33,6 +34,7 @@ def mapping(a, b):
 @njit(fastmath=True)
 def map_get_coordinates(a, b):
     return a // _var_.TILE_SIZE, b // _var_.TILE_SIZE
+
 
 @njit(fastmath=True)
 def get_sin_cos(angle):
@@ -75,19 +77,17 @@ def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT, world_map):
     return x, y, depth_h, subCount, 0
 
 
-def cast_rays(player_x, player_y,surf2D):
-    casted_walls, count = ray_casting(player_x, player_y,_var_.player_angle, map.world_map)
-    print_raycount(count)
+def cast_rays(player_x, player_y, frame):
+    casted_walls, count = ray_casting(player_x, player_y, _var_.player_angle, map.world_map)
+    print_raycount(frame, count)
 
     for ray_index, depth, angle, wallId, offset, x, y, isAo in casted_walls:
-        render2D.draw_ray(surf2D,player_x, player_y, x, y)
-        render3D.draw_3D_wall_segment(ray_index, depth, angle, wallId, offset, False)
-
-    render2D.finish(surf2D)
+        render2D.draw_ray(frame, player_x, player_y, x, y)
+        render3D.draw_3D_wall_segment(frame, ray_index, depth, angle, wallId, offset, False)
 
 
 @njit(fastmath=True)
-def ray_casting(player_x, player_y,player_angle, world_map):
+def ray_casting(player_x, player_y, player_angle, world_map):
     casted_walls = []
     count = 0
     xm, ym = mapping(player_x, player_y)
@@ -101,11 +101,13 @@ def ray_casting(player_x, player_y,player_angle, world_map):
         x2, y2, depth_h, subCount2, tx2 = get_data_hori(player_x, player_y, xm, ym, sin_a, cos_a, HEIGHT, world_map)
         isVert = depth_v < depth_h
 
-        x,y,depth,wallId = (x1,y1,depth_v,tx1) if isVert else (x2,y2,depth_h,tx2)
+        x, y, depth, wallId = (x1, y1, depth_v, tx1) if isVert else (x2, y2, depth_h, tx2)
         if wallId == 0: continue
         offset = (y1 if isVert else x2) / _var_.TILE_SIZE % 1
-        if isVert: offset = offset if cos_a > 0 else (1 - offset)
-        else: offset = (1 - offset) if sin_a > 0 else offset
+        if isVert:
+            offset = offset if cos_a > 0 else (1 - offset)
+        else:
+            offset = (1 - offset) if sin_a > 0 else offset
         if ray_index == 0: prev_vert = isVert
 
         casted_walls.append((ray_index, depth, angle, wallId, offset, x, y, prev_vert != isVert))

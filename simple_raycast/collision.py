@@ -2,7 +2,8 @@ import math
 import simple_raycast.map as map
 import simple_raycast.variables as _var_
 
-def check_collision(player_x, player_y, player_angle, forward,DELTATIME):
+
+def check_collision(player_x, player_y, player_angle, forward, DELTATIME):
     tile = map.get_coordinates(player_x, player_y)
     if map.is_wall(tile):
         if forward:
