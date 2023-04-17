@@ -15,7 +15,7 @@ SCREEN_START = np.array([SCREEN_WIDTH if draw2D else 0, SCREEN_HEIGHT / 2])
 TILE_MULT = SCREEN_WIDTH/480
 TILE_SIZE_2D = TILE_MULT * TILE_SIZE
 
-CASTED_RAYS = 120
+CASTED_RAYS = 240
 MAX_DEPTH = int(MAP_SIZE * TILE_SIZE)
 
 WALL_SECTOR_PX   = SCREEN_WIDTH / CASTED_RAYS
@@ -42,6 +42,9 @@ DRAW_SKY = True
 DRAW_AO = True
 DRAW_FLOOR_TX = True
 
+SCREEN_MULT = 2
 # Game
-win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1), SCREEN_HEIGHT))
+rect_main_frame = np.array([int(SCREEN_WIDTH + SCREEN_START[0]), SCREEN_HEIGHT, 3])
+rect_main_frame_scaled = np.array([int(SCREEN_WIDTH + SCREEN_START[0]), SCREEN_HEIGHT, 3])*SCREEN_MULT
+win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1)*SCREEN_MULT, SCREEN_HEIGHT*SCREEN_MULT))
 pygame.display.set_caption("Raycasting by Sangheli")

@@ -13,8 +13,7 @@ pygame.init()
 clock = pygame.time.Clock()
 DELTATIMEMS = 0
 surf2D = render2D.prepare_surf()
-rect_main_frame = (int(_var_.SCREEN_WIDTH + _var_.SCREEN_START[0]), _var_.SCREEN_HEIGHT, 3)
-main_frame = pygame.surfarray.make_surface(np.random.uniform(0, 1, rect_main_frame) * 255)
+main_frame = pygame.surfarray.make_surface(np.random.uniform(0, 1, _var_.rect_main_frame) * 255)
 
 
 def print_fps(frame):
@@ -44,5 +43,8 @@ while True:
     clock.tick(600)
     DELTATIMEMS = clock.get_time()
     print_fps(main_frame)
-    _var_.win.blit(main_frame, (0, 0))
+
+    screen_frame = pygame.transform.scale(main_frame,
+                                          (_var_.rect_main_frame_scaled[0], _var_.rect_main_frame_scaled[1]))
+    _var_.win.blit(screen_frame, (0, 0))
     pygame.display.flip()
