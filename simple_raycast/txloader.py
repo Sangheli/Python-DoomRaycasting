@@ -16,11 +16,11 @@ def load_sky_image():
 
 def load_wall_textures():
     return {
-            '1':get_texture('resources/textures/1.png'),
-            '2':get_texture('resources/textures/2.png'),
-            '3':get_texture('resources/textures/3.png'),
-            '4':get_texture('resources/textures/4.png'),
-            '5':get_texture('resources/textures/5.png'),
+            1:get_texture('resources/textures/1.png'),
+            2:get_texture('resources/textures/2.png'),
+            3:get_texture('resources/textures/3.png'),
+            4:get_texture('resources/textures/4.png'),
+            5:get_texture('resources/textures/5.png'),
     }
 
 

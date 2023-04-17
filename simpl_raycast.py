@@ -13,7 +13,7 @@ clock = pygame.time.Clock()
 DELTATIMEMS = 0
 
 def print_fps():
-    fps = str(int(clock.get_fps()))
+    fps = 'numba: ' +str(int(clock.get_fps()))
     font = pygame.font.SysFont('Monospace Regular', 30)
     textsurface = font.render(fps, False, (255, 255, 255))
     _var_.win.blit(textsurface, (0, 0))
