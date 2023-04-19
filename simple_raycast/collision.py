@@ -1,6 +1,6 @@
 import math
-import simple_raycast.map as map
-import simple_raycast.variables as _var_
+import map as map
+import variables as _var_
 
 
 def check_collision(player_x, player_y, player_angle, forward, DELTATIME):

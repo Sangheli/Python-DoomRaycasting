@@ -2,10 +2,10 @@ import math
 from numba import njit
 from numba import int32
 
-import simple_raycast.render2D as render2D
-import simple_raycast.render3D as render3D
-import simple_raycast.variables as _var_
-import simple_raycast.map as map
+import render2D as render2D
+import render3D as render3D
+import variables as _var_
+import map as map
 import pygame
 
 WIDTH = _var_.MAP_SIZE * _var_.TILE_SIZE

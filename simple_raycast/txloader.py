@@ -1,5 +1,5 @@
 import pygame as pg
-import simple_raycast.variables as _var_
+import variables as _var_
 
 TEXTURE_SIZE = 256
 COLUMN_SIZE_X = _var_.SCREEN_WIDTH // _var_.CASTED_RAYS
@@ -15,8 +15,8 @@ def load_sky_image():
     return get_texture('resources/textures/sky.png', (_var_.SCREEN_WIDTH, _var_.SCREEN_WIDTH // 2))
 
 
-def load_floor():
-    return get_texture('resources/textures/floor.jpg', (100, 100))
+def load_floor(tx_size):
+    return get_texture('resources/textures/floor.jpg', (tx_size, tx_size))
 
 
 def load_wall_textures():

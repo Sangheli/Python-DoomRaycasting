@@ -46,5 +46,5 @@ SCREEN_MULT = 2
 # Game
 rect_main_frame = np.array([int(SCREEN_WIDTH + SCREEN_START[0]), SCREEN_HEIGHT, 3])
 rect_main_frame_scaled = np.array([int(SCREEN_WIDTH + SCREEN_START[0]), SCREEN_HEIGHT, 3])*SCREEN_MULT
-win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1)*SCREEN_MULT, SCREEN_HEIGHT*SCREEN_MULT))
+win = pygame.display.set_mode((SCREEN_WIDTH * (2 if draw2D else 1)*SCREEN_MULT, SCREEN_HEIGHT*SCREEN_MULT),pygame.SCALED)
 pygame.display.set_caption("Raycasting by Sangheli")

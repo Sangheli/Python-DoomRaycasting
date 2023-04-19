@@ -1,10 +1,10 @@
-import simple_raycast.variables as _var_
+import variables as _var_
 from numba.core import types
 from numba.typed import Dict
 from numba import int32, int64, njit
 
 MAP_SIZE = _var_.MAP_SIZE
-world_map = Dict.empty(key_type=types.UniTuple(int64, 2), value_type=int64)
+world_map = Dict.empty(key_type=types.UniTuple(int32, 2), value_type=int32)
 
 _ = False
 MAP = [
@@ -20,7 +20,7 @@ MAP = [
 
 for j, row in enumerate(MAP):
     for i, char in enumerate(row):
-        if char != _: world_map[(int64(i), int64(j))] = char
+        if char != _: world_map[(int32(i), int32(j))] = char
 
 
 # Получаем координаты в 2Д карте(индексы)

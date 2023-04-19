@@ -1,9 +1,9 @@
 import pygame
 import math
-import simple_raycast.variables as _var_
-import simple_raycast.color as _color_
+import variables as _var_
+import color as _color_
 import numpy as np
-import simple_raycast.txloader as txloader
+import txloader as txloader
 from numba import njit
 
 sky_image = txloader.load_sky_image()
@@ -23,8 +23,8 @@ def draw_solid_sky(frame):
                      (_var_.SCREEN_START[0], -_var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
 
 
-def draw_sky_image(frame, angle_rel):
-    sky_offset = (50 * angle_rel) % _var_.SCREEN_WIDTH
+def draw_sky_image(frame, player_angle):
+    sky_offset = (50 * player_angle) % _var_.SCREEN_WIDTH
     frame.blit(sky_image, (_var_.SCREEN_START[0] - sky_offset, 0))
     frame.blit(sky_image, (_var_.SCREEN_START[0] - sky_offset + _var_.SCREEN_WIDTH, 0))
 

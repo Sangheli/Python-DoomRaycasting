@@ -1,12 +1,12 @@
 # https://pythonprogramming.altervista.org/raycasting-with-pygame/
 import pygame
 import sys
-import simple_raycast.raycast as _raycast_
-import simple_raycast.render2D as render2D
-import simple_raycast.render3D as render3D
-import simple_raycast.variables as _var_
-import simple_raycast.collision as _collision_
-import simple_raycast.input as _input_
+import raycast as _raycast_
+import render2D as render2D
+import render3D as render3D
+import variables as _var_
+import collision as _collision_
+import input as _input_
 import numpy as np
 
 pygame.init()
