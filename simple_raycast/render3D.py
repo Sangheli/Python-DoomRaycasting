@@ -79,12 +79,12 @@ def get_floor_frame(posx, posy, player_angle, frame, floor_image, width, height,
 
 
 def draw_3D_back(frame, player_angle, player_x, player_y):
-    if _var_.DRAW_FLOOR_TX:
+    if _var_.DRAW_TEXTURE and _var_.DRAW_FLOOR_TX:
         draw_textured_floor(frame,sky_surf, player_x, player_y)
     else:
         draw_solid_floor(frame)
 
-    if _var_.DRAW_SKY:
+    if _var_.DRAW_TEXTURE and _var_.DRAW_SKY:
         draw_sky_image(frame, player_angle)
     else:
         draw_solid_sky(frame)
@@ -142,25 +142,6 @@ def draw_wall_solid_color(frame, rect, shading):
     pygame.draw.rect(frame, color, rect)
 
 
-def draw_floor_ao(rect, shading):
-    rect_small = np.array(rect)
-    rect_small[1] = rect_small[1] + rect_small[3]
-    rect_small[3] = (_var_.SCREEN_HEIGHT / 96) / shading;
-    rect_small[1] = rect_small[1] - rect_small[3] / 2
-
-    shape_surf = pygame.Surface(pygame.Rect(rect_small).size, pygame.SRCALPHA)
-    pygame.draw.rect(shape_surf, _color_.get_color_with_shading(_color_.blackA, shading),
-                     shape_surf.get_rect())
-    _var_.win.blit(shape_surf, rect_small)
-
-
-def draw_wall_ao(rect, shading):
-    shape_surf = pygame.Surface(pygame.Rect(rect).size, pygame.SRCALPHA)
-    pygame.draw.rect(shape_surf, _color_.get_color_with_shading(_color_.blackA, shading),
-                     shape_surf.get_rect())
-    _var_.win.blit(shape_surf, rect)
-
-
 def draw_wall_tx(frame, rect, wallId, offset, shading, proj_height):
     isTiny = proj_height < _var_.SCREEN_HEIGHT
 
@@ -182,13 +163,7 @@ def draw_3D_wall_segment(frame, ray, depth, angle, wallId, offset, is_ao):
     if _var_.DRAW_TEXTURE:
         draw_wall_tx(frame, screen_rect, wallId, offset, shading, proj_height)
     else:
-        draw_wall_solid_color(screen_rect, shading)
+        draw_wall_solid_color(frame,screen_rect, shading)
 
     if _var_.DRAW_REFLECTION:
         draw_reflection(frame, screen_rect, shading)
-
-    # if _var_.DRAW_AO:
-    #     if shading > 1.5: return
-    #     # draw_floor_ao(screen_rect, shading)
-    #     if is_ao:
-    #         draw_wall_ao(screen_rect, shading)
