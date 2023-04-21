@@ -63,9 +63,9 @@ def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT, world_map):
 def cast_rays(player_x, player_y, frame):
     casted_walls, count = ray_casting(player_x, player_y, _var_.player_angle, map.world_map)
 
-    for ray_index, depth, angle, wallId, offset, x, y, isAo in casted_walls:
+    for ray_index, depth, angle, wallId, offset, x, y in casted_walls:
         render2D.draw_ray(frame, player_x, player_y, x, y)
-        render3D.draw_3D_wall_segment(frame, ray_index, depth, angle, wallId, offset, False)
+        render3D.draw_3D_wall_segment(frame, ray_index, depth, angle, wallId, offset)
 
     return count
 
@@ -76,7 +76,6 @@ def ray_casting(player_x, player_y, player_angle, world_map):
     count = 0
     xm, ym = mapping(player_x, player_y)
     start_angle = player_angle - _var_.HALF_FOV
-    prev_vert = False
     for ray_index in range(_var_.CASTED_RAYS):
         angle = start_angle + ray_index * _var_.STEP_ANGLE
         sin_a, cos_a = get_sin_cos(angle)
@@ -92,10 +91,8 @@ def ray_casting(player_x, player_y, player_angle, world_map):
             offset = offset if cos_a > 0 else (1 - offset)
         else:
             offset = (1 - offset) if sin_a > 0 else offset
-        if ray_index == 0: prev_vert = isVert
 
-        casted_walls.append((ray_index, depth, angle, wallId, offset, x, y, prev_vert != isVert))
-        prev_vert = isVert
+        casted_walls.append((ray_index, depth, angle, wallId, offset, x, y))
         count += subCount1 + subCount2
 
     return casted_walls, count
