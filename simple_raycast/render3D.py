@@ -8,6 +8,14 @@ from numba import njit
 
 sky_image = txloader.load_sky_image()
 
+floor_tx_size = 100
+floor_scale_size = 300
+floor_frame = np.random.uniform(0, 1, (floor_scale_size, floor_scale_size, 3))
+
+floo_base_image = txloader.load_floor(floor_tx_size)
+floo_base_image = pygame.transform.rotate(floo_base_image, 90)
+floor_image = pygame.surfarray.array3d(floo_base_image) / 255
+floor_angle_mod = floor_scale_size / np.rad2deg(_var_.FOV)
 
 def multiply_with_color_depth(image, shading):
     color = (255 / shading) / 255
@@ -34,8 +42,35 @@ def draw_solid_floor(frame):
                      (_var_.SCREEN_START[0], _var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
 
 
+def draw_textured_floor(main_frame, player_x, player_y):
+    frame = get_floor_frame(player_x / _var_.TILE_SIZE, player_y / _var_.TILE_SIZE, _var_.player_angle, floor_frame,
+                            floor_image, floor_scale_size, floor_scale_size, floor_angle_mod)
+
+    floor_surf = pygame.surfarray.make_surface(frame * 255)
+    floor_surf = pygame.transform.scale(floor_surf, (_var_.SCREEN_WIDTH, _var_.HALF_HEIGHT))
+    main_frame.blit(floor_surf, _var_.SCREEN_START)
+
+
+@njit()
+def get_floor_frame(posx, posy, player_angle, frame, floor_image, width, height, angle_mod):
+    for col in range(width):
+        angle_shift = np.deg2rad(col / angle_mod - 30)
+        angle = player_angle + angle_shift
+        sin_a, cos_a, cos_a_shift = np.sin(angle), np.cos(angle), np.cos(angle_shift)
+        for row in range(height):
+            depth = (height / (height - row)) / cos_a_shift
+            x, y = posx + cos_a * depth, posy + sin_a * depth
+            xx, yy = int(x * 3 % 1 * 100), int(y * 3 % 1 * 100)
+            frame[col][-row] = floor_image[xx][yy]
+
+    return frame
+
+
 def draw_3D_back(frame, player_angle, player_x, player_y):
-    draw_solid_floor(frame)
+    if _var_.DRAW_FLOOR_TX:
+        draw_textured_floor(frame, player_x, player_y)
+    else:
+        draw_solid_floor(frame)
 
     if _var_.DRAW_SKY:
         draw_sky_image(frame, player_angle)
