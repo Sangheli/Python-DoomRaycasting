@@ -90,16 +90,9 @@ def draw_3D_back(frame, player_angle, player_x, player_y):
         draw_solid_sky(frame)
 
 
-@njit(fastmath=True)
+@njit(fastmath=True, cache=True)
 def get_fixed_fisheye_depth(depth, player_angle, angle):
     return depth * math.cos(player_angle - angle)
-
-def update_wall_to_height(rect, wallId):
-    if wallId == '2':
-        rect[3] *= 2
-        rect[1] = rect[3] * 3 / 4
-
-    return rect
 
 
 @njit(fastmath=True)
@@ -111,10 +104,8 @@ def get_wall_segment(ray, proj_height):
 
 
 @njit(fastmath=True)
-def get_screen_rect(ray,proj_height, wallId):
+def get_screen_rect(ray,proj_height):
     rect = get_wall_segment(ray, proj_height)
-    # rect = update_wall_to_height(rect, wallId)
-
     shift = _var_.SCREEN_START + np.array([rect[0], -rect[1]])
     return np.array([shift[0], shift[1], rect[2], rect[3]])
 
@@ -149,7 +140,7 @@ def draw_3D_wall_segment(frame, ray, depth, angle, wallId, offset):
     proj_height = _var_.SCREEN_DIST / (
             get_fixed_fisheye_depth(depth / _var_.TILE_SIZE, _var_.player_angle, angle) + 0.0001)
 
-    screen_rect = get_screen_rect(ray, proj_height, wallId)
+    screen_rect = get_screen_rect(ray, proj_height)
     shading = _color_.get_shading(depth)
 
     if _var_.DRAW_TEXTURE:
