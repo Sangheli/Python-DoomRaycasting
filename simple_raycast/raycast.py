@@ -1,30 +1,13 @@
 import math
 from numba import njit
-from numba import int32
 
 import render2D as render2D
 import render3D as render3D
 import variables as _var_
-import map as map
-import pygame
+import map
 
 WIDTH = _var_.MAP_SIZE * _var_.TILE_SIZE
 HEIGHT = _var_.MAP_SIZE * _var_.TILE_SIZE
-
-
-def print_raycount(frame, count):
-    text = 'rays: ' + str(count)
-    font = pygame.font.SysFont('Monospace Regular', 30)
-    textsurface = font.render(text, False, (255, 255, 255))
-    frame.blit(textsurface, (120, 0))
-
-
-def print_pos(frame, x, y):
-    text = '(' + str(int(x)) + ',' + str(int(y)) + ')'
-    font = pygame.font.SysFont('Monospace Regular', 30)
-    textsurface = font.render(text, False, (255, 255, 255))
-    frame.blit(textsurface, (30, 0))
-
 
 @njit(fastmath=True)
 def mapping(a, b):
@@ -79,11 +62,12 @@ def get_data_hori(ox, oy, xm, ym, sin_a, cos_a, HEIGHT, world_map):
 
 def cast_rays(player_x, player_y, frame):
     casted_walls, count = ray_casting(player_x, player_y, _var_.player_angle, map.world_map)
-    print_raycount(frame, count)
 
     for ray_index, depth, angle, wallId, offset, x, y, isAo in casted_walls:
         render2D.draw_ray(frame, player_x, player_y, x, y)
         render3D.draw_3D_wall_segment(frame, ray_index, depth, angle, wallId, offset, False)
+
+    return count
 
 
 @njit(fastmath=True)

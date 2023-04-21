@@ -35,16 +35,16 @@ while True:
 
     render3D.draw_3D_back(main_frame, _var_.player_angle, fixed_x, fixed_y)
     render2D.draw_2D_map(main_frame, surf2D, fixed_x, fixed_y, _var_.player_angle)
-    _raycast_.cast_rays(fixed_x, fixed_y, main_frame)
+    raycount = _raycast_.cast_rays(fixed_x, fixed_y, main_frame)
 
     _var_.player_angle, _var_.player_x, _var_.player_y, _var_.forward = _input_.input_scan(_var_.player_angle, fixed_x,
                                                                                            fixed_y, _var_.forward,
                                                                                            DELTATIME)
     clock.tick(600)
     DELTATIMEMS = clock.get_time()
-    print_fps(main_frame)
 
     screen_frame = pygame.transform.scale(main_frame,
                                           (_var_.rect_main_frame_scaled[0], _var_.rect_main_frame_scaled[1]))
     _var_.win.blit(screen_frame, (0, 0))
     pygame.display.flip()
+    pygame.display.set_caption(f'{clock.get_fps():.2f} | rays: {raycount}')
