@@ -17,6 +17,8 @@ floo_base_image = pygame.transform.rotate(floo_base_image, 90)
 floor_image = pygame.surfarray.array3d(floo_base_image) / 255
 floor_angle_mod = floor_scale_size / np.rad2deg(_var_.FOV)
 
+sky_surf = pygame.Surface((_var_.SCREEN_WIDTH, _var_.HALF_HEIGHT))
+
 def multiply_with_color_depth(image, shading):
     color = (255 / shading) / 255
     if color >= 0.95:
@@ -42,13 +44,23 @@ def draw_solid_floor(frame):
                      (_var_.SCREEN_START[0], _var_.SCREEN_START[1], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT))
 
 
-def draw_textured_floor(main_frame, player_x, player_y):
+def draw_textured_floor(main_frame,sky_surf, player_x, player_y):
     frame = get_floor_frame(player_x / _var_.TILE_SIZE, player_y / _var_.TILE_SIZE, _var_.player_angle, floor_frame,
                             floor_image, floor_scale_size, floor_scale_size, floor_angle_mod)
 
     floor_surf = pygame.surfarray.make_surface(frame * 255)
     floor_surf = pygame.transform.scale(floor_surf, (_var_.SCREEN_WIDTH, _var_.HALF_HEIGHT))
-    main_frame.blit(floor_surf, _var_.SCREEN_START)
+    if not _var_.DRAW_REFLECTION or not _var_.DRAW_FLOOR_SKY_REFLECTION:
+        main_frame.blit(floor_surf, _var_.SCREEN_START)
+        return
+
+    sky_surf.blit(main_frame, (_var_.SCREEN_START[0], 0,_var_.SCREEN_WIDTH, _var_.HALF_HEIGHT))
+    sky_surf = pygame.transform.flip(sky_surf, False, True)
+
+    reflected_image = 0.75 * pygame.surfarray.array3d(floor_surf) + 0.25 * pygame.surfarray.array3d(sky_surf)
+    reflected_surf = pygame.surfarray.make_surface(reflected_image)
+
+    main_frame.blit(reflected_surf, _var_.SCREEN_START)
 
 
 @njit()
@@ -68,7 +80,7 @@ def get_floor_frame(posx, posy, player_angle, frame, floor_image, width, height,
 
 def draw_3D_back(frame, player_angle, player_x, player_y):
     if _var_.DRAW_FLOOR_TX:
-        draw_textured_floor(frame, player_x, player_y)
+        draw_textured_floor(frame,sky_surf, player_x, player_y)
     else:
         draw_solid_floor(frame)
 
