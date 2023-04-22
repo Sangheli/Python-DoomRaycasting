@@ -5,6 +5,7 @@ import color as _color_
 import numpy as np
 import txloader as txloader
 from numba import njit
+import reflection as _reflection_
 
 sky_image = txloader.load_sky_image()
 
@@ -109,16 +110,6 @@ def get_screen_rect(ray,proj_height):
     shift = _var_.SCREEN_START + np.array([rect[0], -rect[1]])
     return np.array([shift[0], shift[1], rect[2], rect[3]])
 
-
-def draw_reflection(frame, rect, shading):
-    rect_reflected = np.array(rect)
-    rect_reflected[1] = rect_reflected[1] + rect_reflected[3]
-    shape_surf = pygame.Surface(pygame.Rect(rect_reflected).size, pygame.SRCALPHA)
-    pygame.draw.rect(shape_surf, _color_.get_color_with_shading(_color_.color_reflection, shading),
-                     shape_surf.get_rect())
-    frame.blit(shape_surf, rect_reflected)
-
-
 def draw_wall_solid_color(frame, rect, shading):
     color = _color_.get_color_with_shading(_color_.wall_color, shading)
     pygame.draw.rect(frame, color, rect)
@@ -149,4 +140,4 @@ def draw_3D_wall_segment(frame, ray, depth, angle, wallId, offset):
         draw_wall_solid_color(frame,screen_rect, shading)
 
     if _var_.DRAW_REFLECTION:
-        draw_reflection(frame, screen_rect, shading)
+        _reflection_.draw_reflection(frame, screen_rect, shading)
