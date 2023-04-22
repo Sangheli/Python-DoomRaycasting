@@ -1,5 +1,5 @@
 from math import cos, sin
-from sdf_Functions import normalize, SignedDistance, offScreen
+from sdf_Functions import normalize, offScreen
 import variables as _var_
 
 
@@ -25,7 +25,7 @@ def find_nearest(pos, objects):
     current = None
     record = 1000
     for obj in objects:
-        distance = SignedDistance(pos, obj.position, obj.radius)
+        distance = obj.SignedDistance(pos)
         if distance < record:
             record = distance
             current = obj

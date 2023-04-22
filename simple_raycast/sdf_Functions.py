@@ -1,12 +1,4 @@
-from math import sqrt
 import numpy as np
-
-
-def SignedDistance(a, b, r):
-    dx = a[0] - b[0]
-    dy = a[1] - b[1]
-    distance = sqrt(dx**2 + dy**2)
-    return distance - r
 
 
 def normalize(v):

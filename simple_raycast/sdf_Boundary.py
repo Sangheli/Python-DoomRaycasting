@@ -1,5 +1,6 @@
 import math
 import random
+import color as _color_
 
 speed = 50
 
@@ -18,3 +19,9 @@ class Boundary:
         self.position[1] += self.delta[1] * speed * DELTATIME
         self.step_count += 1
         if self.step_count > 20: self.step_count = 0
+
+    def SignedDistance(self, target_pos):
+        dx = target_pos[0] - self.position[0]
+        dy = target_pos[1] - self.position[1]
+        distance = math.sqrt(dx ** 2 + dy ** 2)
+        return distance - self.radius
