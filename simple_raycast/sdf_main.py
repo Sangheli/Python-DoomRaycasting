@@ -4,6 +4,7 @@ import pygame
 import sys
 import sdf_raycast as _raycast_
 import render3D_solid_back
+import sdf_render2D as render2D
 import variables as _var_
 import input as _input_
 import numpy as np
@@ -13,6 +14,7 @@ from random import randint
 pygame.init()
 clock = pygame.time.Clock()
 DELTATIMEMS = 0
+surf2D = render2D.prepare_surf()
 main_frame = pygame.surfarray.make_surface(np.random.uniform(0, 1, _var_.rect_main_frame) * 255)
 
 screen_offset = 50
@@ -33,11 +35,11 @@ while True:
     DELTATIME = DELTATIMEMS / 1000
     fixed_x, fixed_y = _var_.player_x, _var_.player_y
 
-    render3D_solid_back.draw_3D_back(main_frame)
-
     for obj in objects:
         obj.random_move(DELTATIME)
 
+    render2D.draw_2D_map(main_frame, surf2D, fixed_x, fixed_y, _var_.player_angle,objects)
+    render3D_solid_back.draw_3D_back(main_frame)
     _raycast_.cast_rays(fixed_x, fixed_y, main_frame,objects)
 
     _var_.player_angle, _var_.player_x, _var_.player_y, _var_.forward = _input_.input_scan(_var_.player_angle, fixed_x,
