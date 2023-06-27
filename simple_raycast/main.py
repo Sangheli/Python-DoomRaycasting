@@ -1,4 +1,6 @@
 # https://pythonprogramming.altervista.org/raycasting-with-pygame/
+# https://github.com/FinFetChannel/RayCasting2021
+
 import pygame
 import sys
 import raycast as _raycast_

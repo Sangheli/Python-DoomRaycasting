@@ -140,4 +140,4 @@ def draw_3D_wall_segment(frame, ray, depth, angle, wallId, offset):
         draw_wall_solid_color(frame,screen_rect, shading)
 
     if _var_.DRAW_REFLECTION:
-        _reflection_.draw_reflection(frame, screen_rect, shading)
+        _reflection_.draw_reflection(frame, screen_rect, shading,None)
