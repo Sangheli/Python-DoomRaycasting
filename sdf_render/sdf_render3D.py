@@ -1,10 +1,10 @@
 import pygame
 import math
-import variables as _var_
-import color as _color_
+from simple_raycast import variables as _var_
+from simple_raycast import color as _color_
 import numpy as np
 from numba import njit
-import reflection as _reflection_
+from simple_raycast import reflection as _reflection_
 
 
 @njit(fastmath=True, cache=True)

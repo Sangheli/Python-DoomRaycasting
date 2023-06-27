@@ -1,6 +1,6 @@
 from math import cos, sin
 from sdf_Functions import normalize, offScreen
-import variables as _var_
+from simple_raycast import variables as _var_
 
 
 def March(player_pos, angle, objects):

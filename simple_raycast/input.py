@@ -1,6 +1,6 @@
 import pygame
 import math
-import variables as _var_
+from simple_raycast import variables as _var_
 
 
 def input_scan(player_angle, player_x, player_y, forward,DELTATIME):

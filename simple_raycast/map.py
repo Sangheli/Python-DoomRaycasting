@@ -1,4 +1,4 @@
-import variables as _var_
+from simple_raycast import variables as _var_
 from numba.core import types
 from numba.typed import Dict
 from numba import int32, int64, njit

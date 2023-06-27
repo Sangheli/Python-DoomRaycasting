@@ -1,5 +1,5 @@
 import sdf_render3D as render3D
-import variables as _var_
+from simple_raycast import variables as _var_
 import sdf_ray as ray
 import sdf_render2D as render2D
 

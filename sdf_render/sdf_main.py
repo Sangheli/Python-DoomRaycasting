@@ -3,10 +3,10 @@
 import pygame
 import sys
 import sdf_raycast as _raycast_
-import render3D_solid_back
+from simple_raycast import render3D_solid_back
 import sdf_render2D as render2D
-import variables as _var_
-import input as _input_
+import simple_raycast.variables as _var_
+from simple_raycast import input as _input_
 import numpy as np
 from sdf_Boundary import Boundary
 from random import randint

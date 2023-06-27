@@ -1,6 +1,5 @@
 import math
 import random
-import color as _color_
 
 speed = 50
 

@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-import color as _color_
+from simple_raycast import color as _color_
 
 
 def draw_reflection(frame, rect, shading, obj):

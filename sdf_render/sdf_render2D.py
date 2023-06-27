@@ -1,7 +1,7 @@
 import pygame
-import map as map
-import color as _color_
-import variables as _var_
+from simple_raycast import map
+from simple_raycast import color as _color_
+from simple_raycast import variables as _var_
 import math
 
 

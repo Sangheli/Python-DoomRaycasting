@@ -1,6 +1,6 @@
 import pygame
-import color as _color_
-import variables as _var_
+from simple_raycast import color as _color_
+from simple_raycast import variables as _var_
 
 
 def draw_solid_sky(frame):
