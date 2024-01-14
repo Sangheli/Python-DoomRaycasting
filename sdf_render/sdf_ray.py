@@ -1,19 +1,19 @@
 from math import cos, sin
+
+import numpy as np
+
 from sdf_Functions import normalize, offScreen
 from simple_raycast import variables as _var_
-
 
 def March(player_pos, angle, objects):
     counter = 0
     dist = 0
-    pos = player_pos
-    while counter < 100:
+    pos = np.array(player_pos)
+    cos_sin = np.array([cos(angle), sin(angle)])
+    while counter < 80:
         record, current = find_nearest(pos, objects)
         if record < 1: break
-        x_p, y_p = pos[0] + cos(angle) * record, pos[1] + sin(angle) * record
-        a_X, a_Y = pos[0] + cos(angle) * record, pos[1] + sin(angle) * record
-        pos = [normalize(x_p) * a_X, normalize(x_p) * a_Y]
-        if offScreen([x_p, y_p], _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT): return 1000, None
+        pos += record * cos_sin
         if offScreen(pos, _var_.SCREEN_WIDTH, _var_.SCREEN_HEIGHT): return 1000, None
         counter += 1
         dist += record
@@ -25,7 +25,11 @@ def find_nearest(pos, objects):
     current = None
     record = 1000
     for obj in objects:
-        distance = obj.SignedDistance(pos)
+        if(obj.isSquare):
+            distance = obj.sdBox(pos)
+        else:
+            distance = obj.SignedDistance(pos)
+
         if distance < record:
             record = distance
             current = obj

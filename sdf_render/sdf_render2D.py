@@ -34,7 +34,22 @@ def draw_2D_map(frame, surf2D, player_x, player_y, player_angle, objects):
 
     for obj in objects:
         if obj.position[0] < 0 or obj.position[1] < 0: continue
+
         pygame.draw.circle(frame, obj.color, (int(obj.position[0]), int(obj.position[1])), int(obj.radius))
+        continue
+
+        if(obj.isSquare):
+            pygame.draw.rect(frame, obj.color,
+                             (
+                                    obj.position[0] ,
+                                    obj.position[1],
+                                    obj.position[0],
+                                    obj.position[1]
+                                ),
+              1)
+        else:
+            pygame.draw.circle(frame, obj.color, (int(obj.position[0]), int(obj.position[1])), int(obj.radius))
+
 
 
 def draw_ray(frame, ox, oy, depth, angle):

@@ -18,13 +18,30 @@ surf2D = render2D.prepare_surf()
 main_frame = pygame.surfarray.make_surface(np.random.uniform(0, 1, _var_.rect_main_frame) * 255)
 
 screen_offset = 50
-object_count = 10
+object_count = 1
 objects = []
+objectsSq = []
 
 for i in range(object_count):
-    obj = Boundary(randint(screen_offset, _var_.SCREEN_WIDTH - screen_offset), randint(screen_offset, _var_.SCREEN_HEIGHT - screen_offset), randint(5, 70))
+    x = randint(screen_offset, _var_.SCREEN_WIDTH - screen_offset)
+    y = randint(screen_offset, _var_.SCREEN_HEIGHT - screen_offset)
+
+    obj = Boundary(
+       x,
+       y,
+        60,
+        False
+    )
     objects.append(obj)
 
+for i in range(object_count):
+    obj = Boundary(
+        x,
+        y,
+        50,
+        True
+    )
+    objectsSq.append(obj)
 
 while True:
     for event in pygame.event.get():
@@ -35,12 +52,12 @@ while True:
     DELTATIME = DELTATIMEMS / 1000
     fixed_x, fixed_y = _var_.player_x, _var_.player_y
 
-    for obj in objects:
-        obj.random_move(DELTATIME)
+    # for obj in objects: obj.random_move(DELTATIME)
 
     render2D.draw_2D_map(main_frame, surf2D, fixed_x, fixed_y, _var_.player_angle,objects)
+    render2D.draw_2D_map(main_frame, surf2D, fixed_x, fixed_y, _var_.player_angle,objectsSq)
     render3D_solid_back.draw_3D_back(main_frame)
-    _raycast_.cast_rays(fixed_x, fixed_y, main_frame,objects)
+    _raycast_.cast_rays(fixed_x, fixed_y, main_frame,objects,objectsSq)
 
     _var_.player_angle, _var_.player_x, _var_.player_y, _var_.forward = _input_.input_scan(_var_.player_angle, fixed_x,
                                                                                            fixed_y, _var_.forward,
